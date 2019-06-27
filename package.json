@@ -3,9 +3,9 @@
   "version": "0.0.2",
   "description": "",
   "keywords": [],
-  "main": "dist/FlashComponent.umd.js",
-  "module": "dist/FlashComponent.es5.js",
-  "typings": "dist/types/FlashComponent.d.ts",
+  "main": "dist/KamiFlash.umd.js",
+  "module": "dist/KamiFlash.es5.js",
+  "typings": "dist/types/KamiFlash.d.ts",
   "files": [
     "dist"
   ],
