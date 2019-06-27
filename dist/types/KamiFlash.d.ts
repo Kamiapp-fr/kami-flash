@@ -5,7 +5,7 @@ import KamiComponent from 'kami-component';
  * Create a simple flash message
  * @class KamiFlash
  * @extends KamiComponent
-*/
+ */
 declare class KamiFlash extends KamiComponent {
     /**
      * @property {HTMLElement | null} close - the close btn

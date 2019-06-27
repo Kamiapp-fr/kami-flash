@@ -768,6 +768,7 @@ var KamiComponent = /** @class */ (function (_super) {
     };
     return KamiComponent;
 }(HTMLElement));
+//# sourceMappingURL=KamiComponent.es5.js.map
 
 var Type;
 (function (Type) {
@@ -789,7 +790,7 @@ var Color$1 = Color;
  * Create a simple flash message
  * @class KamiFlash
  * @extends KamiComponent
-*/
+ */
 var KamiFlash = /** @class */ (function (_super) {
     __extends(KamiFlash, _super);
     function KamiFlash() {
