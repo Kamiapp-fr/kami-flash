@@ -1,5 +1,3 @@
-// Import here Polyfills if needed. Recommended core-js (npm i -D core-js)
-// import "core-js/fn/array.find"
 import '@webcomponents/webcomponentsjs/custom-elements-es5-adapter';
 import '@webcomponents/webcomponentsjs/webcomponents-bundle';
 import KamiComponent from 'kami-component';
@@ -107,7 +105,7 @@ class KamiFlash extends KamiComponent {
                     <div id="close" class="flash__close">❌</div>
                 </div>
             </div>
-            `;
+        `;
     }
 
     public renderStyle(): string {

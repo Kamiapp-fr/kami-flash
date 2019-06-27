@@ -47,8 +47,7 @@ The most basic flash:
 
 ```html
 
-<!-- Generate a good message with the text 'Write your message flash here'
- -->
+<!-- Generate a good message with the text 'Write your message flash here'-->
 <kami-flash></kami-flash>
 
 ```
@@ -56,8 +55,7 @@ The most basic flash:
 You can custom the type of flash:
 ```html
 
-<!-- Generate a error message with the text 'Write your message flash here'
- -->
+<!-- Generate a error message with the text 'Write your message flash here'-->
 <kami-flash
     typeProps="ERROR"
 ></kami-flash>
@@ -66,8 +64,7 @@ You can custom the type of flash:
 
 You can also custom the message:
 ```html
-<!-- Generate a good message with the text 'A simple text'
- -->
+<!-- Generate a good message with the text 'A simple text'-->
 <kami-flash
     messageProps="A simple text"
 ></kami-flash>
@@ -76,8 +73,7 @@ You can also custom the message:
 
 And you can custom both:
 ```html
-<!-- Generate a warning message with the text 'A simple text'
- -->
+<!-- Generate a warning message with the text 'A simple text'-->
 <kami-flash
     typeProps="WARNING"
     messageProps="A simple text"
