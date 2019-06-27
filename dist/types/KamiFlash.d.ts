@@ -3,42 +3,28 @@ import '@webcomponents/webcomponentsjs/webcomponents-bundle';
 import KamiComponent from 'kami-component';
 /**
  * Create a simple flash message
- * @class Flash
- * @extends Component
- * @example <caption>index.js</caption>
- * import Flash from "./Components/Flash";
- * window.customElements.define('flash-element', Flash);
- *
- * @example  <caption>html</caption>
- * <flash-element typeProps="OK" messageProps="a good message"></flash-element>
- * <flash-element typeProps="WARNING" messageProps="a warning message"></flash-element>
- * <flash-element typeProps="ERROR" messageProps="a error message"></flash-element>
- */
+ * @class KamiFlash
+ * @extends KamiComponent
+*/
 declare class KamiFlash extends KamiComponent {
-    message: any;
-    type: any;
-    close: HTMLElement | null;
+    /**
+     * @property {HTMLElement | null} close - the close btn
+     */
+    private close;
+    /**
+     * @property {HTMLElement | null} flash - the dom structure
+     */
+    private flash;
     constructor();
     static readonly observedAttributes: string[];
+    setProperties(): void;
+    initEventListener(): void;
     /**
      * This method is call when the compenent it create.
      * Here it use to add an enter animation
      */
     connectedCallback(): void;
-    initEventListener(): void;
-    /**
-     * set properties for the parent class
-     */
-    setProperties(): void;
-    /**
-     * Render the html template
-     * @returns {String} a html template
-     */
     renderHtml(): string;
-    /**
-     * Render the style for the web component
-     * @returns {String} a style sheet
-     */
     renderStyle(): string;
 }
 export default KamiFlash;
