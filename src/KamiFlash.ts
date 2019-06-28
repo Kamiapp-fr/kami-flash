@@ -1,5 +1,9 @@
+//polyfill
 import '@webcomponents/webcomponentsjs/custom-elements-es5-adapter';
 import '@webcomponents/webcomponentsjs/webcomponents-bundle';
+import 'web-animations-js';
+
+//import lib
 import KamiComponent from 'kami-component';
 import Type from './enum/Type';
 import Color from './enum/Color';
@@ -51,7 +55,7 @@ class KamiFlash extends KamiComponent {
                 [
                     { opacity: '1', transform: 'translateY(0px)' },
                     { opacity: '0', transform: 'translateY(30px)' }
-                ],
+                ] as Keyframe[],
                 {
                     duration: 500,
                     easing: 'ease'
@@ -73,7 +77,7 @@ class KamiFlash extends KamiComponent {
                 [
                     { opacity: '0', transform: 'translateY(20px)' },
                     { opacity: '1', transform: 'translateY(0px)' }
-                ],
+                ] as Keyframe[],
                 {
                     duration: 500,
                     easing: 'ease'
@@ -85,7 +89,7 @@ class KamiFlash extends KamiComponent {
                     [
                         { opacity: '0', transform: 'translateX(20px) rotateZ(45deg)' },
                         { opacity: '1', transform: 'translateX(0px) rotateZ(0deg)' }
-                    ],
+                    ] as Keyframe[],
                     {
                         duration: 500,
                         easing: 'ease'

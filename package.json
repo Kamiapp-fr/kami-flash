@@ -1,6 +1,6 @@
 {
   "name": "kami-flash",
-  "version": "0.0.2",
+  "version": "0.0.1",
   "description": "",
   "keywords": [],
   "main": "dist/KamiFlash.umd.js",
@@ -126,7 +126,8 @@
     "tslint-config-prettier": "^1.15.0",
     "tslint-config-standard": "^8.0.1",
     "typedoc": "^0.12.0",
-    "typescript": "^3.0.3"
+    "typescript": "^3.0.3",
+    "web-animations-js": "^2.3.1"
   },
   "dependencies": {
     "kami-component": "0.0.2"

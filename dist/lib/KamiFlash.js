@@ -13,10 +13,11 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-// Import here Polyfills if needed. Recommended core-js (npm i -D core-js)
-// import "core-js/fn/array.find"
+//polyfill
 require("@webcomponents/webcomponentsjs/custom-elements-es5-adapter");
 require("@webcomponents/webcomponentsjs/webcomponents-bundle");
+require("web-animations-js");
+//import lib
 var kami_component_1 = require("kami-component");
 var Type_1 = require("./enum/Type");
 var Color_1 = require("./enum/Color");
@@ -24,7 +25,7 @@ var Color_1 = require("./enum/Color");
  * Create a simple flash message
  * @class KamiFlash
  * @extends KamiComponent
-*/
+ */
 var KamiFlash = /** @class */ (function (_super) {
     __extends(KamiFlash, _super);
     function KamiFlash() {
@@ -94,10 +95,10 @@ var KamiFlash = /** @class */ (function (_super) {
         }
     };
     KamiFlash.prototype.renderHtml = function () {
-        return "\n                <div class=\"flash\">\n                    <div class=\"flash__message flash__message--" + this.props.type + " shadow__bottom--30px\">\n                        <div class=\"flash__text\">" + this.props.message + "</div>\n                        <div id=\"close\" class=\"flash__close\">\u274C</div>\n                    </div>\n                </div>\n            ";
+        return "\n            <div class=\"flash\">\n                <div class=\"flash__message flash__message--" + this.props.type + " shadow__bottom--30px\">\n                <div class=\"flash__text\">" + this.props.message + "</div>\n                    <div id=\"close\" class=\"flash__close\">\u274C</div>\n                </div>\n            </div>\n        ";
     };
     KamiFlash.prototype.renderStyle = function () {
-        return "\n\n                .flash{\n                    position: fixed;\n                    bottom: 20px;\n                    width: 100%;\n                    display: flex;\n                    justify-content: center;\n                    align-items: center;\n                    transition: all 1s ease;\n                    z-index: 100;\n                }\n\n                .flash__message{\n                    padding: 10px;\n                    border-radius: .2857rem;\n                    align-items: center;\n                    justify-content: space-around;\n                    display: flex;\n                }\n\n                .flash__text{\n                    padding-right: 10px;\n                    padding-left: 10px;\n                    font-family: sans-serif;\n                }\n\n                .flash__message--" + Type_1.default.ERROR + "{\n                    background-color: " + Color_1.default.ERROR + ";\n                    color: white;\n                }\n\n                .flash__message--" + Type_1.default.OK + "{\n                    background-color: " + Color_1.default.OK + ";\n                    color: white;\n                }\n\n                .flash__message--" + Type_1.default.WARNING + "{\n                    background-color: " + Type_1.default.WARNING + ";\n                    color: white;\n                }\n\n                .flash__close{\n                    cursor: pointer;\n                    opacity: 0;\n                }\n\n                .flash__close:hover{\n                    transition : all 0.5s ease;\n                }\n            ";
+        return "\n\n            .flash{\n                position: fixed;\n                bottom: 20px;\n                width: 100%;\n                display: flex;\n                justify-content: center;\n                align-items: center;\n                transition: all 1s ease;\n                z-index: 100;\n            }\n\n            .flash__message{\n                padding: 10px;\n                border-radius: .2857rem;\n                align-items: center;\n                justify-content: space-around;\n                display: flex;\n            }\n\n            .flash__text{\n                padding-right: 10px;\n                padding-left: 10px;\n                font-family: sans-serif;\n            }\n\n            .flash__message--" + Type_1.default.ERROR + "{\n                background-color: " + Color_1.default.ERROR + ";\n                color: white;\n            }\n\n            .flash__message--" + Type_1.default.OK + "{\n                background-color: " + Color_1.default.OK + ";\n                color: white;\n            }\n\n            .flash__message--" + Type_1.default.WARNING + "{\n                background-color: " + Type_1.default.WARNING + ";\n                color: white;\n            }\n\n            .flash__close{\n                cursor: pointer;\n                opacity: 0;\n            }\n\n            .flash__close:hover{\n                transition : all 0.5s ease;\n            }\n        ";
     };
     return KamiFlash;
 }(kami_component_1.default));
