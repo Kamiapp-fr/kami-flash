@@ -17,10 +17,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("@webcomponents/webcomponentsjs/custom-elements-es5-adapter");
 require("@webcomponents/webcomponentsjs/webcomponents-bundle");
 require("web-animations-js");
+require("@polymer/iron-icon/iron-icon.js");
+require("@polymer/iron-icons/iron-icons.js");
 //import lib
 var kami_component_1 = require("kami-component");
 var Type_1 = require("./enum/Type");
 var Color_1 = require("./enum/Color");
+var Icon_1 = require("./enum/Icon");
 /**
  * Create a simple flash message
  * @class KamiFlash
@@ -45,6 +48,7 @@ var KamiFlash = /** @class */ (function (_super) {
         var type = this.getAttribute('typeProps') || 'OK';
         this.props = this.observe({
             type: Type_1.default[type],
+            icon: Icon_1.default[type],
             message: this.getAttribute('messageProps') || 'Write your message flash here'
         });
     };
@@ -95,7 +99,7 @@ var KamiFlash = /** @class */ (function (_super) {
         }
     };
     KamiFlash.prototype.renderHtml = function () {
-        return "\n            <div class=\"flash\">\n                <div class=\"flash__message flash__message--" + this.props.type + " shadow__bottom--30px\">\n                <div class=\"flash__text\">" + this.props.message + "</div>\n                    <div id=\"close\" class=\"flash__close\">\u274C</div>\n                </div>\n            </div>\n        ";
+        return "\n        \n            <div class=\"flash\">\n                <div class=\"flash__message flash__message--" + this.props.type + " shadow__bottom--30px\">\n                    <iron-icon icon=\"" + this.props.icon + "\"></iron-icon>\n                    <div class=\"flash__text\">" + this.props.message + "</div>\n                    <iron-icon class=\"flash__close\" id=\"close\" icon=\"close\"></iron-icon>\n                </div>\n            </div>\n        ";
     };
     KamiFlash.prototype.renderStyle = function () {
         return "\n\n            .flash{\n                position: fixed;\n                bottom: 20px;\n                width: 100%;\n                display: flex;\n                justify-content: center;\n                align-items: center;\n                transition: all 1s ease;\n                z-index: 100;\n            }\n\n            .flash__message{\n                padding: 10px;\n                border-radius: .2857rem;\n                align-items: center;\n                justify-content: space-around;\n                display: flex;\n            }\n\n            .flash__text{\n                padding-right: 10px;\n                padding-left: 10px;\n                font-family: sans-serif;\n            }\n\n            .flash__message--" + Type_1.default.ERROR + "{\n                background-color: " + Color_1.default.ERROR + ";\n                color: white;\n            }\n\n            .flash__message--" + Type_1.default.OK + "{\n                background-color: " + Color_1.default.OK + ";\n                color: white;\n            }\n\n            .flash__message--" + Type_1.default.WARNING + "{\n                background-color: " + Type_1.default.WARNING + ";\n                color: white;\n            }\n\n            .flash__close{\n                cursor: pointer;\n                opacity: 0;\n            }\n\n            .flash__close:hover{\n                transition : all 0.5s ease;\n            }\n        ";

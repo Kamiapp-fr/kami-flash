@@ -2,11 +2,14 @@
 import '@webcomponents/webcomponentsjs/custom-elements-es5-adapter';
 import '@webcomponents/webcomponentsjs/webcomponents-bundle';
 import 'web-animations-js';
+import '@polymer/iron-icon/iron-icon.js';
+import '@polymer/iron-icons/iron-icons.js';
 
 //import lib
 import KamiComponent from 'kami-component';
 import Type from './enum/Type';
 import Color from './enum/Color';
+import Icon from './enum/Icon';
 
 /**
  * Create a simple flash message
@@ -40,6 +43,7 @@ class KamiFlash extends KamiComponent {
 
         this.props = this.observe({
             type: Type[type],
+            icon: Icon[type],
             message: this.getAttribute('messageProps') || 'Write your message flash here'
         });
     }
@@ -103,10 +107,12 @@ class KamiFlash extends KamiComponent {
 
     public renderHtml(): string {
         return `
+        
             <div class="flash">
                 <div class="flash__message flash__message--${this.props.type} shadow__bottom--30px">
-                <div class="flash__text">${this.props.message}</div>
-                    <div id="close" class="flash__close">❌</div>
+                    <iron-icon icon="${this.props.icon}"></iron-icon>
+                    <div class="flash__text">${this.props.message}</div>
+                    <iron-icon class="flash__close" id="close" icon="close"></iron-icon>
                 </div>
             </div>
         `;
