@@ -1,7 +1,8 @@
 enum Icon {
     OK = 'check',
-    ERROR = 'warining',
-    WARNING = 'error'
+    ERROR = 'error',
+    WARNING = 'warning',
+    INFO = 'info'
 }
 
 export default Icon;

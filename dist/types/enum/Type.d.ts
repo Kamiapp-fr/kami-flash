@@ -1,6 +1,7 @@
 declare enum Type {
     OK = "OK",
     ERROR = "ERROR",
-    WARNING = "WARNING"
+    WARNING = "WARNING",
+    INFO = "INFO"
 }
 export default Type;

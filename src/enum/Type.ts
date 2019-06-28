@@ -1,7 +1,8 @@
 enum Type {
-  OK = 'OK',
-  ERROR = 'ERROR',
-  WARNING = 'WARNING'
+    OK = 'OK',
+    ERROR = 'ERROR',
+    WARNING = 'WARNING',
+    INFO = 'INFO'
 }
 
-export default Type
+export default Type;

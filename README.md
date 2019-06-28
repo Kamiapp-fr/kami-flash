@@ -1,6 +1,11 @@
-# kami-flash
+
+# `<kami-flash>`
 
 A simple flash component.
+
+<p align="center">
+  <img  src="https://emilienleroy.fr/assets/flash.gif">
+</p>
 
 ## Installation
 
@@ -44,6 +49,10 @@ window.customElements.define('kami-flash', KamiFlash);
 
 
 The most basic flash:
+
+<p align="center">
+  <img  src="https://emilienleroy.fr/assets/flash.gif">
+</p>
 
 ```html
 

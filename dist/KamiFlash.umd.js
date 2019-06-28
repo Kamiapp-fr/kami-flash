@@ -17377,22 +17377,25 @@
         Type["OK"] = "OK";
         Type["ERROR"] = "ERROR";
         Type["WARNING"] = "WARNING";
+        Type["INFO"] = "INFO";
     })(Type || (Type = {}));
     var Type$1 = Type;
 
     var Color;
     (function (Color) {
         Color["OK"] = "#00bf9a";
-        Color["ERROR"] = "red";
-        Color["WARNING"] = "orange";
+        Color["ERROR"] = "#fd77a4";
+        Color["WARNING"] = "#ff9f89";
+        Color["INFO"] = "#419ef9";
     })(Color || (Color = {}));
     var Color$1 = Color;
 
     var Icon;
     (function (Icon) {
         Icon["OK"] = "check";
-        Icon["ERROR"] = "warining";
-        Icon["WARNING"] = "error";
+        Icon["ERROR"] = "error";
+        Icon["WARNING"] = "warning";
+        Icon["INFO"] = "info";
     })(Icon || (Icon = {}));
     var Icon$1 = Icon;
 
