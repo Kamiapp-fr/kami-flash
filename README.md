@@ -48,48 +48,33 @@ window.customElements.define('kami-flash', KamiFlash);
 ## Examples
 
 
-The most basic flash:
+Just add into your html the flash component like this.
+See the *props section* to customize your flash component.
 
 <p align="center">
-  <img  src="https://emilienleroy.fr/assets/flash.gif">
+  <img  src="https://emilienleroy.fr/assets/error.gif">
 </p>
 
 ```html
 
-<!-- Generate a good message with the text 'Write your message flash here'-->
-<kami-flash></kami-flash>
+<!-- Generate an error message with the text 'An error message !'-->
+<flash-exemple
+    typeprops="ERROR"
+    messageprops="An error message !"
+>
+</flash-exemple>
 
 ```
+## Props
 
-You can custom the type of flash:
-```html
+| name          |  type    | description                 | required | default value                  |
+|-------------- |:--------:|-----------------------------|----------|--------------------------------|
+| typeProps     | Type     | The flash type              | false    | OK                             |
+| messageProps  | String   | The flash message           | false    | 'Write your message flash here'|
+| positionProps | Position | The flash position          | false    | BOTTOM                         |
 
-<!-- Generate a error message with the text 'Write your message flash here'-->
-<kami-flash
-    typeProps="ERROR"
-></kami-flash>
-
-```
-
-You can also custom the message:
-```html
-<!-- Generate a good message with the text 'A simple text'-->
-<kami-flash
-    messageProps="A simple text"
-></kami-flash>
-
-```
-
-And you can custom both:
-```html
-<!-- Generate a warning message with the text 'A simple text'-->
-<kami-flash
-    typeProps="WARNING"
-    messageProps="A simple text"
-></kami-flash>
-
-```
 
 ## Contribute
 
 We would love you for the contribution to ``kami-flash`` project, check the ``CONTRIBUTING`` file for more info.
+

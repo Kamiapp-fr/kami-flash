@@ -1,5 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * Determine which color should be used which each type.
+ * @enum Color
+ */
 var Color;
 (function (Color) {
     Color["OK"] = "#00bf9a";

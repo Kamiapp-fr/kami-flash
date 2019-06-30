@@ -18,10 +18,22 @@ declare class KamiFlash extends KamiComponent {
      * @property {HTMLElement | null} flash - the dom structure
      */
     private flash;
-    private animations;
-    private animationOption;
+    /**
+     * @property {IAnimation} bottomAnimation - animations for bottom element
+     */
     private bottomAnimation;
+    /**
+     * @property {IAnimation} topAnimation - animations for top element
+     */
     private topAnimation;
+    /**
+     * @property {any} animations - link animation with a position
+     */
+    private animations;
+    /**
+     * @property {KeyframeAnimationOptions} animationOptions - animation options
+     */
+    private animationOptions;
     constructor();
     static readonly observedAttributes: string[];
     setProperties(): void;

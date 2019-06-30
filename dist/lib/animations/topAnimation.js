@@ -8,7 +8,7 @@ var topAnimation = {
     out: [
         { opacity: '1', transform: 'translateY(0px)' },
         { opacity: '0', transform: 'translateY(-30px)' }
-    ],
+    ]
 };
 exports.default = topAnimation;
 //# sourceMappingURL=topAnimation.js.map

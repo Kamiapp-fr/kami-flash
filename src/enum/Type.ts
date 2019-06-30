@@ -1,3 +1,7 @@
+/**
+ * Defini the different flash type.
+ * @enum Type
+ */
 enum Type {
     OK = 'OK',
     ERROR = 'ERROR',

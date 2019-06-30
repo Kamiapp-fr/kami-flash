@@ -1,3 +1,7 @@
+/**
+ * Determine which color should be used which each type.
+ * @enum Color
+ */
 enum Color {
     OK = '#00bf9a',
     ERROR = '#fd77a4',

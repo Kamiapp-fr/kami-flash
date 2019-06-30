@@ -35,24 +35,44 @@ class KamiFlash extends KamiComponent {
      */
     private flash: HTMLElement | null;
 
-    private animations: any;
-    private animationOption: { duration: number; easing: string };
+    /**
+     * @property {IAnimation} bottomAnimation - animations for bottom element
+     */
     private bottomAnimation: IAnimation;
+
+    /**
+     * @property {IAnimation} topAnimation - animations for top element
+     */
     private topAnimation: IAnimation;
+
+    /**
+     * @property {any} animations - link animation with a position
+     */
+    private animations: any;
+
+    /**
+     * @property {KeyframeAnimationOptions} animationOptions - animation options
+     */
+    private animationOptions: KeyframeAnimationOptions;
 
     constructor() {
         super();
 
+        //get dom from the component
         this.close = this.wrapper.querySelector('#close');
         this.flash = this.wrapper.querySelector('.flash');
 
+        //init animation
         this.bottomAnimation = bottomAnimation;
         this.topAnimation = topAnimation;
 
+        //init all animation with the good position
         this.animations = {};
         this.animations[Position['BOTTOM']] = this.bottomAnimation;
         this.animations[Position['TOP']] = this.topAnimation;
-        this.animationOption = {
+
+        //init animation option
+        this.animationOptions = {
             duration: 500,
             easing: 'ease'
         };
@@ -83,7 +103,7 @@ class KamiFlash extends KamiComponent {
         this.close!.addEventListener('click', () => {
             this.flash!.animate(
                 this.animations[this.props.position].out,
-                this.animationOption
+                this.animationOptions
             ).onfinish = () => {
                 //delete this component.
                 this.remove();
@@ -97,7 +117,7 @@ class KamiFlash extends KamiComponent {
      */
     public connectedCallback(): void {
         if (this.flash && this.close) {
-            this.flash.animate(this.animations[this.props.position].enter, this.animationOption);
+            this.flash.animate(this.animations[this.props.position].enter, this.animationOptions);
 
             setTimeout(() => {
                 this.close!.animate(
@@ -105,7 +125,7 @@ class KamiFlash extends KamiComponent {
                         { opacity: '0', transform: 'translateX(20px) rotateZ(45deg)' },
                         { opacity: '1', transform: 'translateX(0px) rotateZ(0deg)' }
                     ] as Keyframe[],
-                    this.animationOption
+                    this.animationOptions
                 ).onfinish = () => {
                     this.close!.style.opacity = '1';
                 };

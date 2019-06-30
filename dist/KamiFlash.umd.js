@@ -17380,7 +17380,7 @@
         out: [
             { opacity: '1', transform: 'translateY(0px)' },
             { opacity: '0', transform: 'translateY(30px)' }
-        ],
+        ]
     };
 
     var topAnimation = {
@@ -17391,9 +17391,13 @@
         out: [
             { opacity: '1', transform: 'translateY(0px)' },
             { opacity: '0', transform: 'translateY(-30px)' }
-        ],
+        ]
     };
 
+    /**
+     * Defini the different flash type.
+     * @enum Type
+     */
     var Type;
     (function (Type) {
         Type["OK"] = "OK";
@@ -17403,6 +17407,10 @@
     })(Type || (Type = {}));
     var Type$1 = Type;
 
+    /**
+     * Determine which color should be used which each type.
+     * @enum Color
+     */
     var Color;
     (function (Color) {
         Color["OK"] = "#00bf9a";
@@ -17412,6 +17420,12 @@
     })(Color || (Color = {}));
     var Color$1 = Color;
 
+    /**
+     * Enum to determine which icon use for the flash component.
+     * It use the iron-icones component to generate icone.
+     * https://github.com/PolymerElements/iron-icons
+     * @enum Icon
+     */
     var Icon;
     (function (Icon) {
         Icon["OK"] = "check";
@@ -17439,14 +17453,18 @@
         __extends(KamiFlash, _super);
         function KamiFlash() {
             var _this = _super.call(this) || this;
+            //get dom from the component
             _this.close = _this.wrapper.querySelector('#close');
             _this.flash = _this.wrapper.querySelector('.flash');
+            //init animation
             _this.bottomAnimation = bottomAnimation;
             _this.topAnimation = topAnimation;
+            //init all animation with the good position
             _this.animations = {};
             _this.animations[Position$1['BOTTOM']] = _this.bottomAnimation;
             _this.animations[Position$1['TOP']] = _this.topAnimation;
-            _this.animationOption = {
+            //init animation option
+            _this.animationOptions = {
                 duration: 500,
                 easing: 'ease'
             };
@@ -17476,7 +17494,7 @@
             this.flash = this.wrapper.querySelector('.flash');
             this.close = this.wrapper.querySelector('#close');
             this.close.addEventListener('click', function () {
-                _this.flash.animate(_this.animations[_this.props.position].out, _this.animationOption).onfinish = function () {
+                _this.flash.animate(_this.animations[_this.props.position].out, _this.animationOptions).onfinish = function () {
                     //delete this component.
                     _this.remove();
                 };
@@ -17489,12 +17507,12 @@
         KamiFlash.prototype.connectedCallback = function () {
             var _this = this;
             if (this.flash && this.close) {
-                this.flash.animate(this.animations[this.props.position].enter, this.animationOption);
+                this.flash.animate(this.animations[this.props.position].enter, this.animationOptions);
                 setTimeout(function () {
                     _this.close.animate([
                         { opacity: '0', transform: 'translateX(20px) rotateZ(45deg)' },
                         { opacity: '1', transform: 'translateX(0px) rotateZ(0deg)' }
-                    ], _this.animationOption).onfinish = function () {
+                    ], _this.animationOptions).onfinish = function () {
                         _this.close.style.opacity = '1';
                     };
                 }, 400);
