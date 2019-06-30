@@ -17366,6 +17366,28 @@ var KamiComponent = /** @class */ (function (_super) {
     return KamiComponent;
 }(HTMLElement));
 
+var bottomAnimation = {
+    enter: [
+        { opacity: '0', transform: 'translateY(20px)' },
+        { opacity: '1', transform: 'translateY(0px)' }
+    ],
+    out: [
+        { opacity: '1', transform: 'translateY(0px)' },
+        { opacity: '0', transform: 'translateY(30px)' }
+    ],
+};
+
+var topAnimation = {
+    enter: [
+        { opacity: '0', transform: 'translateY(-20px)' },
+        { opacity: '1', transform: 'translateY(0px)' }
+    ],
+    out: [
+        { opacity: '1', transform: 'translateY(0px)' },
+        { opacity: '0', transform: 'translateY(-30px)' }
+    ],
+};
+
 var Type;
 (function (Type) {
     Type["OK"] = "OK";
@@ -17393,6 +17415,15 @@ var Icon;
 })(Icon || (Icon = {}));
 var Icon$1 = Icon;
 
+var Position;
+(function (Position) {
+    Position["TOP"] = "flash--top";
+    Position["BOTTOM"] = "flash--bottom";
+    Position["LEFT"] = "left";
+    Position["RIGHT"] = "right";
+})(Position || (Position = {}));
+var Position$1 = Position;
+
 /**
  * Create a simple flash message
  * @class KamiFlash
@@ -17404,6 +17435,15 @@ var KamiFlash = /** @class */ (function (_super) {
         var _this = _super.call(this) || this;
         _this.close = _this.wrapper.querySelector('#close');
         _this.flash = _this.wrapper.querySelector('.flash');
+        _this.bottomAnimation = bottomAnimation;
+        _this.topAnimation = topAnimation;
+        _this.animations = {};
+        _this.animations[Position$1['BOTTOM']] = _this.bottomAnimation;
+        _this.animations[Position$1['TOP']] = _this.topAnimation;
+        _this.animationOption = {
+            duration: 500,
+            easing: 'ease'
+        };
         return _this;
     }
     Object.defineProperty(KamiFlash, "observedAttributes", {
@@ -17415,7 +17455,9 @@ var KamiFlash = /** @class */ (function (_super) {
     });
     KamiFlash.prototype.setProperties = function () {
         var type = this.getAttribute('typeProps') || 'OK';
+        var position = this.getAttribute('positionProps') || 'BOTTOM';
         this.props = this.observe({
+            position: Position$1[position],
             type: Type$1[type],
             icon: Icon$1[type],
             message: this.getAttribute('messageProps') || 'Write your message flash here'
@@ -17428,13 +17470,7 @@ var KamiFlash = /** @class */ (function (_super) {
         this.flash = this.wrapper.querySelector('.flash');
         this.close = this.wrapper.querySelector('#close');
         this.close.addEventListener('click', function () {
-            _this.flash.animate([
-                { opacity: '1', transform: 'translateY(0px)' },
-                { opacity: '0', transform: 'translateY(30px)' }
-            ], {
-                duration: 500,
-                easing: 'ease'
-            }).onfinish = function () {
+            _this.flash.animate(_this.animations[_this.props.position].out, _this.animationOption).onfinish = function () {
                 //delete this component.
                 _this.remove();
             };
@@ -17447,31 +17483,22 @@ var KamiFlash = /** @class */ (function (_super) {
     KamiFlash.prototype.connectedCallback = function () {
         var _this = this;
         if (this.flash && this.close) {
-            this.flash.animate([
-                { opacity: '0', transform: 'translateY(20px)' },
-                { opacity: '1', transform: 'translateY(0px)' }
-            ], {
-                duration: 500,
-                easing: 'ease'
-            });
+            this.flash.animate(this.animations[this.props.position].enter, this.animationOption);
             setTimeout(function () {
                 _this.close.animate([
                     { opacity: '0', transform: 'translateX(20px) rotateZ(45deg)' },
                     { opacity: '1', transform: 'translateX(0px) rotateZ(0deg)' }
-                ], {
-                    duration: 500,
-                    easing: 'ease'
-                }).onfinish = function () {
+                ], _this.animationOption).onfinish = function () {
                     _this.close.style.opacity = '1';
                 };
             }, 400);
         }
     };
     KamiFlash.prototype.renderHtml = function () {
-        return "\n        \n            <div class=\"flash\">\n                <div class=\"flash__message flash__message--" + this.props.type + " shadow__bottom--30px\">\n                    <iron-icon icon=\"" + this.props.icon + "\"></iron-icon>\n                    <div class=\"flash__text\">" + this.props.message + "</div>\n                    <iron-icon class=\"flash__close\" id=\"close\" icon=\"close\"></iron-icon>\n                </div>\n            </div>\n        ";
+        return "\n            <div class=\"flash " + this.props.position + "\">\n                <div class=\"flash__message flash__message--" + this.props.type + " shadow__bottom--30px\">\n                    <iron-icon icon=\"" + this.props.icon + "\"></iron-icon>\n                    <div class=\"flash__text\">" + this.props.message + "</div>\n                    <iron-icon class=\"flash__close\" id=\"close\" icon=\"close\"></iron-icon>\n                </div>\n            </div>\n        ";
     };
     KamiFlash.prototype.renderStyle = function () {
-        return "\n\n            .flash{\n                position: fixed;\n                bottom: 20px;\n                width: 100%;\n                display: flex;\n                justify-content: center;\n                align-items: center;\n                transition: all 1s ease;\n                z-index: 100;\n            }\n\n            .flash__message{\n                padding: 10px;\n                border-radius: .2857rem;\n                align-items: center;\n                justify-content: space-around;\n                display: flex;\n            }\n\n            .flash__text{\n                padding-right: 10px;\n                padding-left: 10px;\n                font-family: sans-serif;\n            }\n\n            .flash__message--" + Type$1.ERROR + "{\n                background-color: " + Color$1.ERROR + ";\n                color: white;\n            }\n\n            .flash__message--" + Type$1.OK + "{\n                background-color: " + Color$1.OK + ";\n                color: white;\n            }\n\n            .flash__message--" + Type$1.WARNING + "{\n                background-color: " + Type$1.WARNING + ";\n                color: white;\n            }\n\n            .flash__close{\n                cursor: pointer;\n                opacity: 0;\n            }\n\n            .flash__close:hover{\n                transition : all 0.5s ease;\n            }\n        ";
+        return "\n\n            .flash{\n                position: fixed;\n                display: flex;\n                justify-content: center;\n                align-items: center;\n                transition: all 1s ease;\n                z-index: 100;\n            }\n\n            .flash--bottom{\n                bottom: 20px;\n                margin: 0% auto;\n                left: 0;\n                right: 0;\n            }\n\n            .flash--top{\n                top: 20px;\n                margin: 0% auto;\n                left: 0;\n                right: 0;\n            }\n\n            .flash__message{\n                padding: 10px;\n                border-radius: .2857rem;\n                align-items: center;\n                justify-content: space-around;\n                display: flex;\n            }\n\n            .flash__text{\n                padding-right: 10px;\n                padding-left: 10px;\n                font-family: sans-serif;\n            }\n\n            .flash__message--" + Type$1.ERROR + "{\n                background-color: " + Color$1.ERROR + ";\n                color: white;\n            }\n\n            .flash__message--" + Type$1.OK + "{\n                background-color: " + Color$1.OK + ";\n                color: white;\n            }\n\n            .flash__message--" + Type$1.WARNING + "{\n                background-color: " + Type$1.WARNING + ";\n                color: white;\n            }\n\n            .flash__close{\n                cursor: pointer;\n                opacity: 0;\n            }\n\n            .flash__close:hover{\n                transition : all 0.5s ease;\n            }\n        ";
     };
     return KamiFlash;
 }(KamiComponent));

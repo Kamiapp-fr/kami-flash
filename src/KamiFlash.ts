@@ -7,9 +7,17 @@ import '@polymer/iron-icons/iron-icons.js';
 
 //import lib
 import KamiComponent from 'kami-component';
+import bottomAnimation from './animations/bottomAnimation';
+import topAnimation from './animations/topAnimation';
+
+//import interfaces
+import IAnimation from './interfaces/IAnimation';
+
+//import enum
 import Type from './enum/Type';
 import Color from './enum/Color';
 import Icon from './enum/Icon';
+import Position from './enum/Position';
 
 /**
  * Create a simple flash message
@@ -27,11 +35,27 @@ class KamiFlash extends KamiComponent {
      */
     private flash: HTMLElement | null;
 
+    private animations: any;
+    private animationOption: { duration: number; easing: string };
+    private bottomAnimation: IAnimation;
+    private topAnimation: IAnimation;
+
     constructor() {
         super();
 
         this.close = this.wrapper.querySelector('#close');
         this.flash = this.wrapper.querySelector('.flash');
+
+        this.bottomAnimation = bottomAnimation;
+        this.topAnimation = topAnimation;
+
+        this.animations = {};
+        this.animations[Position['BOTTOM']] = this.bottomAnimation;
+        this.animations[Position['TOP']] = this.topAnimation;
+        this.animationOption = {
+            duration: 500,
+            easing: 'ease'
+        };
     }
 
     static get observedAttributes() {
@@ -40,8 +64,10 @@ class KamiFlash extends KamiComponent {
 
     public setProperties(): void {
         let type: any = this.getAttribute('typeProps') || 'OK';
+        let position: any = this.getAttribute('positionProps') || 'BOTTOM';
 
         this.props = this.observe({
+            position: Position[position],
             type: Type[type],
             icon: Icon[type],
             message: this.getAttribute('messageProps') || 'Write your message flash here'
@@ -56,14 +82,8 @@ class KamiFlash extends KamiComponent {
 
         this.close!.addEventListener('click', () => {
             this.flash!.animate(
-                [
-                    { opacity: '1', transform: 'translateY(0px)' },
-                    { opacity: '0', transform: 'translateY(30px)' }
-                ] as Keyframe[],
-                {
-                    duration: 500,
-                    easing: 'ease'
-                }
+                this.animations[this.props.position].out,
+                this.animationOption
             ).onfinish = () => {
                 //delete this component.
                 this.remove();
@@ -77,16 +97,7 @@ class KamiFlash extends KamiComponent {
      */
     public connectedCallback(): void {
         if (this.flash && this.close) {
-            this.flash.animate(
-                [
-                    { opacity: '0', transform: 'translateY(20px)' },
-                    { opacity: '1', transform: 'translateY(0px)' }
-                ] as Keyframe[],
-                {
-                    duration: 500,
-                    easing: 'ease'
-                }
-            );
+            this.flash.animate(this.animations[this.props.position].enter, this.animationOption);
 
             setTimeout(() => {
                 this.close!.animate(
@@ -94,10 +105,7 @@ class KamiFlash extends KamiComponent {
                         { opacity: '0', transform: 'translateX(20px) rotateZ(45deg)' },
                         { opacity: '1', transform: 'translateX(0px) rotateZ(0deg)' }
                     ] as Keyframe[],
-                    {
-                        duration: 500,
-                        easing: 'ease'
-                    }
+                    this.animationOption
                 ).onfinish = () => {
                     this.close!.style.opacity = '1';
                 };
@@ -107,8 +115,7 @@ class KamiFlash extends KamiComponent {
 
     public renderHtml(): string {
         return `
-        
-            <div class="flash">
+            <div class="flash ${this.props.position}">
                 <div class="flash__message flash__message--${this.props.type} shadow__bottom--30px">
                     <iron-icon icon="${this.props.icon}"></iron-icon>
                     <div class="flash__text">${this.props.message}</div>
@@ -123,13 +130,25 @@ class KamiFlash extends KamiComponent {
 
             .flash{
                 position: fixed;
-                bottom: 20px;
-                width: 100%;
                 display: flex;
                 justify-content: center;
                 align-items: center;
                 transition: all 1s ease;
                 z-index: 100;
+            }
+
+            .flash--bottom{
+                bottom: 20px;
+                margin: 0% auto;
+                left: 0;
+                right: 0;
+            }
+
+            .flash--top{
+                top: 20px;
+                margin: 0% auto;
+                left: 0;
+                right: 0;
             }
 
             .flash__message{
