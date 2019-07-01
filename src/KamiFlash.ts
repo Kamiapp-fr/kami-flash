@@ -68,8 +68,16 @@ class KamiFlash extends KamiComponent {
 
         //init all animation with the good position
         this.animations = {};
+
+        //bottom animation
         this.animations[Position['BOTTOM']] = this.bottomAnimation;
+        this.animations[Position['BOTTOMLEFT']] = this.bottomAnimation;
+        this.animations[Position['BOTTOMRIGHT']] = this.bottomAnimation;
+
+        //top animation
         this.animations[Position['TOP']] = this.topAnimation;
+        this.animations[Position['TOPLEFT']] = this.topAnimation;
+        this.animations[Position['TOPRIGHT']] = this.topAnimation;
 
         //init animation option
         this.animationOptions = {
@@ -155,6 +163,7 @@ class KamiFlash extends KamiComponent {
                 align-items: center;
                 transition: all 1s ease;
                 z-index: 100;
+                width: fit-content;
             }
 
             .flash--bottom{
@@ -169,6 +178,26 @@ class KamiFlash extends KamiComponent {
                 margin: 0% auto;
                 left: 0;
                 right: 0;
+            }
+
+            .flash--topleft{
+                top: 20px;
+                left: 20px;
+            }
+
+            .flash--topright{
+                top: 20px;
+                right: 20px;
+            }
+
+            .flash--bottomleft{
+                bottom: 20px;
+                left: 20px;
+            }
+
+            .flash--bottomright{
+                bottom: 20px;
+                right: 20px;
             }
 
             .flash__message{

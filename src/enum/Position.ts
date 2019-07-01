@@ -1,8 +1,10 @@
 enum Position {
     TOP = 'flash--top',
+    TOPLEFT = 'flash--topleft',
+    TOPRIGHT = 'flash--topright',
     BOTTOM = 'flash--bottom',
-    LEFT = 'left',
-    RIGHT = 'right'
+    BOTTOMLEFT = 'flash--bottomleft',
+    BOTTOMRIGHT = 'flash--bottomright'
 }
 
 export default Position;

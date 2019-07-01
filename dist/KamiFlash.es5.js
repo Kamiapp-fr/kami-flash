@@ -17432,9 +17432,11 @@ var Icon$1 = Icon;
 var Position;
 (function (Position) {
     Position["TOP"] = "flash--top";
+    Position["TOPLEFT"] = "flash--topleft";
+    Position["TOPRIGHT"] = "flash--topright";
     Position["BOTTOM"] = "flash--bottom";
-    Position["LEFT"] = "left";
-    Position["RIGHT"] = "right";
+    Position["BOTTOMLEFT"] = "flash--bottomleft";
+    Position["BOTTOMRIGHT"] = "flash--bottomright";
 })(Position || (Position = {}));
 var Position$1 = Position;
 
@@ -17455,8 +17457,14 @@ var KamiFlash = /** @class */ (function (_super) {
         _this.topAnimation = topAnimation;
         //init all animation with the good position
         _this.animations = {};
+        //bottom animation
         _this.animations[Position$1['BOTTOM']] = _this.bottomAnimation;
+        _this.animations[Position$1['BOTTOMLEFT']] = _this.bottomAnimation;
+        _this.animations[Position$1['BOTTOMRIGHT']] = _this.bottomAnimation;
+        //top animation
         _this.animations[Position$1['TOP']] = _this.topAnimation;
+        _this.animations[Position$1['TOPLEFT']] = _this.topAnimation;
+        _this.animations[Position$1['TOPRIGHT']] = _this.topAnimation;
         //init animation option
         _this.animationOptions = {
             duration: 500,
@@ -17516,7 +17524,7 @@ var KamiFlash = /** @class */ (function (_super) {
         return "\n            <div class=\"flash " + this.props.position + "\">\n                <div class=\"flash__message flash__message--" + this.props.type + " shadow__bottom--30px\">\n                    <iron-icon icon=\"" + this.props.icon + "\"></iron-icon>\n                    <div class=\"flash__text\">" + this.props.message + "</div>\n                    <iron-icon class=\"flash__close\" id=\"close\" icon=\"close\"></iron-icon>\n                </div>\n            </div>\n        ";
     };
     KamiFlash.prototype.renderStyle = function () {
-        return "\n\n            .flash{\n                position: fixed;\n                display: flex;\n                justify-content: center;\n                align-items: center;\n                transition: all 1s ease;\n                z-index: 100;\n            }\n\n            .flash--bottom{\n                bottom: 20px;\n                margin: 0% auto;\n                left: 0;\n                right: 0;\n            }\n\n            .flash--top{\n                top: 20px;\n                margin: 0% auto;\n                left: 0;\n                right: 0;\n            }\n\n            .flash__message{\n                padding: 10px;\n                border-radius: .2857rem;\n                align-items: center;\n                justify-content: space-around;\n                display: flex;\n            }\n\n            .flash__text{\n                padding-right: 10px;\n                padding-left: 10px;\n                font-family: sans-serif;\n            }\n\n            .flash__message--" + Type$1.ERROR + "{\n                background-color: " + Color$1.ERROR + ";\n                color: white;\n            }\n\n            .flash__message--" + Type$1.OK + "{\n                background-color: " + Color$1.OK + ";\n                color: white;\n            }\n\n            .flash__message--" + Type$1.WARNING + "{\n                background-color: " + Type$1.WARNING + ";\n                color: white;\n            }\n\n            .flash__close{\n                cursor: pointer;\n                opacity: 0;\n            }\n\n            .flash__close:hover{\n                transition : all 0.5s ease;\n            }\n        ";
+        return "\n\n            .flash{\n                position: fixed;\n                display: flex;\n                justify-content: center;\n                align-items: center;\n                transition: all 1s ease;\n                z-index: 100;\n                width: fit-content;\n            }\n\n            .flash--bottom{\n                bottom: 20px;\n                margin: 0% auto;\n                left: 0;\n                right: 0;\n            }\n\n            .flash--top{\n                top: 20px;\n                margin: 0% auto;\n                left: 0;\n                right: 0;\n            }\n\n            .flash--topleft{\n                top: 20px;\n                left: 20px;\n            }\n\n            .flash--topright{\n                top: 20px;\n                right: 20px;\n            }\n\n            .flash--bottomleft{\n                bottom: 20px;\n                left: 20px;\n            }\n\n            .flash--bottomright{\n                bottom: 20px;\n                right: 20px;\n            }\n\n            .flash__message{\n                padding: 10px;\n                border-radius: .2857rem;\n                align-items: center;\n                justify-content: space-around;\n                display: flex;\n            }\n\n            .flash__text{\n                padding-right: 10px;\n                padding-left: 10px;\n                font-family: sans-serif;\n            }\n\n            .flash__message--" + Type$1.ERROR + "{\n                background-color: " + Color$1.ERROR + ";\n                color: white;\n            }\n\n            .flash__message--" + Type$1.OK + "{\n                background-color: " + Color$1.OK + ";\n                color: white;\n            }\n\n            .flash__message--" + Type$1.WARNING + "{\n                background-color: " + Type$1.WARNING + ";\n                color: white;\n            }\n\n            .flash__close{\n                cursor: pointer;\n                opacity: 0;\n            }\n\n            .flash__close:hover{\n                transition : all 0.5s ease;\n            }\n        ";
     };
     return KamiFlash;
 }(KamiComponent));
