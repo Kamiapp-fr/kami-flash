@@ -6,19 +6,85 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
 </head>
+<style>
+    *{
+        padding: 0;
+        margin: 0;
+    }
+
+    body{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100vh;
+        flex-direction: column;
+    }
+
+    div{
+        margin: 10px;
+    }
+
+    button{
+        width: 100px;
+    }
+
+</style>
 <body>
     
-    <flash-exemple
-        typeprops="ERROR"
-        positionprops="BOTTOMLEFT"
-        messageprops="An error message !"
-    ></flash-exemple>
+    <div>
+        <input id="message" type="text" placeholder="Write your message">
+        <select name="" id="type">
+            <option value="INFO">Info</option>
+            <option value="OK">Ok</option>
+            <option value="ERROR">Error</option>
+            <option value="WARNING">Warning</option>
+        </select>
+    </div>
 
+    <div>
+        <button id="TOPLEFT">TOPLEFT</button>
+        <button id="TOP">TOP</button>
+        <button id="TOPRIGHT">TOPRIGHT</button>
+    </div>
+    
+    <div>
+        <button id="BOTTOMLEFT">BOTTOMLEFT</button>
+        <button id="BOTTOM">BOTTOM</button>
+        <button id="BOTTOMRIGHT">BOTTOMRIGHT</button>
+    </div>
+    
 
     <script src="../dist/KamiFlash.umd.js"></script>
     <script>
         window.onload = function(){
-            customElements.define('flash-exemple', KamiFlash);
+            //declare flash component
+            customElements.define('kami-flash', KamiFlash);
+
+            //get all button
+            let buttons = document.querySelectorAll('button');
+            buttons.forEach((button)=>{
+
+                //add event click listener for each btn
+                button.addEventListener('click',function(){
+
+                    //generate the flash component
+                    let select = document.querySelector('#type')
+                    let message = document.querySelector('#message');
+                    let flash = document.createElement('kami-flash');
+                    
+                    flash.setAttribute('type',select.options[select.selectedIndex].value);
+                    flash.setAttribute('position',this.id);
+
+                    if(message.value){
+                        flash.setAttribute('message',message.value);
+                    }
+
+                    //append the flash message to the body
+                    document.body.append(flash);
+                })
+            })
+
         }
     </script>
 </body>

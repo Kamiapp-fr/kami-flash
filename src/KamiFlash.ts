@@ -87,18 +87,17 @@ class KamiFlash extends KamiComponent {
     }
 
     static get observedAttributes() {
-        return ['typeprops', 'messageprops'];
+        return ['type', 'message', 'position'];
     }
 
     public setProperties(): void {
-        let type: any = this.getAttribute('typeProps') || 'OK';
-        let position: any = this.getAttribute('positionProps') || 'BOTTOM';
+        let type: any = this.getAttribute('type') || 'OK';
+        let position: any = this.getAttribute('position') || 'BOTTOM';
 
         this.props = this.observe({
-            position: Position[position],
-            type: Type[type],
-            icon: Icon[type],
-            message: this.getAttribute('messageProps') || 'Write your message flash here'
+            position: position,
+            type: type,
+            message: this.getAttribute('message') || 'Write your message flash here'
         });
     }
 
@@ -110,7 +109,7 @@ class KamiFlash extends KamiComponent {
 
         this.close!.addEventListener('click', () => {
             this.flash!.animate(
-                this.animations[this.props.position].out,
+                this.animations[Position[this.props.position]].out,
                 this.animationOptions
             ).onfinish = () => {
                 //delete this component.
@@ -125,7 +124,12 @@ class KamiFlash extends KamiComponent {
      */
     public connectedCallback(): void {
         if (this.flash && this.close) {
-            this.flash.animate(this.animations[this.props.position].enter, this.animationOptions);
+            console.log(this.props);
+
+            this.flash.animate(
+                this.animations[Position[this.props.position]].enter,
+                this.animationOptions
+            );
 
             setTimeout(() => {
                 this.close!.animate(
@@ -143,9 +147,11 @@ class KamiFlash extends KamiComponent {
 
     public renderHtml(): string {
         return `
-            <div class="flash ${this.props.position}">
-                <div class="flash__message flash__message--${this.props.type} shadow__bottom--30px">
-                    <iron-icon icon="${this.props.icon}"></iron-icon>
+            <div class="flash ${Position[this.props.position]}">
+                <div class="flash__message flash__message--${
+                    Type[this.props.type]
+                } shadow__bottom--30px">
+                    <iron-icon icon="${Icon[this.props.type]}"></iron-icon>
                     <div class="flash__text">${this.props.message}</div>
                     <iron-icon class="flash__close" id="close" icon="close"></iron-icon>
                 </div>
@@ -225,7 +231,12 @@ class KamiFlash extends KamiComponent {
             }
 
             .flash__message--${Type.WARNING}{
-                background-color: ${Type.WARNING};
+                background-color: ${Color.WARNING};
+                color: white;
+            }
+
+            .flash__message--${Type.INFO}{
+                background-color: ${Color.INFO};
                 color: white;
             }
 

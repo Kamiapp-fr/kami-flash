@@ -1,7 +1,7 @@
 
 # `<kami-flash>`
 
-A simple flash component.
+A simple flash component. [DEMO](https://emilienleroy.fr/assets/flash/)
 
 <p align="center">
   <img  src="https://emilienleroy.fr/assets/flash.gif">

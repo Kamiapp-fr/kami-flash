@@ -62,19 +62,18 @@ var KamiFlash = /** @class */ (function (_super) {
     }
     Object.defineProperty(KamiFlash, "observedAttributes", {
         get: function () {
-            return ['typeprops', 'messageprops'];
+            return ['type', 'message', 'position'];
         },
         enumerable: true,
         configurable: true
     });
     KamiFlash.prototype.setProperties = function () {
-        var type = this.getAttribute('typeProps') || 'OK';
-        var position = this.getAttribute('positionProps') || 'BOTTOM';
+        var type = this.getAttribute('type') || 'OK';
+        var position = this.getAttribute('position') || 'BOTTOM';
         this.props = this.observe({
-            position: Position_1.default[position],
-            type: Type_1.default[type],
-            icon: Icon_1.default[type],
-            message: this.getAttribute('messageProps') || 'Write your message flash here'
+            position: position,
+            type: type,
+            message: this.getAttribute('message') || 'Write your message flash here'
         });
     };
     KamiFlash.prototype.initEventListener = function () {
@@ -84,7 +83,7 @@ var KamiFlash = /** @class */ (function (_super) {
         this.flash = this.wrapper.querySelector('.flash');
         this.close = this.wrapper.querySelector('#close');
         this.close.addEventListener('click', function () {
-            _this.flash.animate(_this.animations[_this.props.position].out, _this.animationOptions).onfinish = function () {
+            _this.flash.animate(_this.animations[Position_1.default[_this.props.position]].out, _this.animationOptions).onfinish = function () {
                 //delete this component.
                 _this.remove();
             };
@@ -97,7 +96,8 @@ var KamiFlash = /** @class */ (function (_super) {
     KamiFlash.prototype.connectedCallback = function () {
         var _this = this;
         if (this.flash && this.close) {
-            this.flash.animate(this.animations[this.props.position].enter, this.animationOptions);
+            console.log(this.props);
+            this.flash.animate(this.animations[Position_1.default[this.props.position]].enter, this.animationOptions);
             setTimeout(function () {
                 _this.close.animate([
                     { opacity: '0', transform: 'translateX(20px) rotateZ(45deg)' },
@@ -109,10 +109,10 @@ var KamiFlash = /** @class */ (function (_super) {
         }
     };
     KamiFlash.prototype.renderHtml = function () {
-        return "\n            <div class=\"flash " + this.props.position + "\">\n                <div class=\"flash__message flash__message--" + this.props.type + " shadow__bottom--30px\">\n                    <iron-icon icon=\"" + this.props.icon + "\"></iron-icon>\n                    <div class=\"flash__text\">" + this.props.message + "</div>\n                    <iron-icon class=\"flash__close\" id=\"close\" icon=\"close\"></iron-icon>\n                </div>\n            </div>\n        ";
+        return "\n            <div class=\"flash " + Position_1.default[this.props.position] + "\">\n                <div class=\"flash__message flash__message--" + Type_1.default[this.props.type] + " shadow__bottom--30px\">\n                    <iron-icon icon=\"" + Icon_1.default[this.props.type] + "\"></iron-icon>\n                    <div class=\"flash__text\">" + this.props.message + "</div>\n                    <iron-icon class=\"flash__close\" id=\"close\" icon=\"close\"></iron-icon>\n                </div>\n            </div>\n        ";
     };
     KamiFlash.prototype.renderStyle = function () {
-        return "\n\n            .flash{\n                position: fixed;\n                display: flex;\n                justify-content: center;\n                align-items: center;\n                transition: all 1s ease;\n                z-index: 100;\n                width: fit-content;\n            }\n\n            .flash--bottom{\n                bottom: 20px;\n                margin: 0% auto;\n                left: 0;\n                right: 0;\n            }\n\n            .flash--top{\n                top: 20px;\n                margin: 0% auto;\n                left: 0;\n                right: 0;\n            }\n\n            .flash--topleft{\n                top: 20px;\n                left: 20px;\n            }\n\n            .flash--topright{\n                top: 20px;\n                right: 20px;\n            }\n\n            .flash--bottomleft{\n                bottom: 20px;\n                left: 20px;\n            }\n\n            .flash--bottomright{\n                bottom: 20px;\n                right: 20px;\n            }\n\n            .flash__message{\n                padding: 10px;\n                border-radius: .2857rem;\n                align-items: center;\n                justify-content: space-around;\n                display: flex;\n            }\n\n            .flash__text{\n                padding-right: 10px;\n                padding-left: 10px;\n                font-family: sans-serif;\n            }\n\n            .flash__message--" + Type_1.default.ERROR + "{\n                background-color: " + Color_1.default.ERROR + ";\n                color: white;\n            }\n\n            .flash__message--" + Type_1.default.OK + "{\n                background-color: " + Color_1.default.OK + ";\n                color: white;\n            }\n\n            .flash__message--" + Type_1.default.WARNING + "{\n                background-color: " + Type_1.default.WARNING + ";\n                color: white;\n            }\n\n            .flash__close{\n                cursor: pointer;\n                opacity: 0;\n            }\n\n            .flash__close:hover{\n                transition : all 0.5s ease;\n            }\n        ";
+        return "\n\n            .flash{\n                position: fixed;\n                display: flex;\n                justify-content: center;\n                align-items: center;\n                transition: all 1s ease;\n                z-index: 100;\n                width: fit-content;\n            }\n\n            .flash--bottom{\n                bottom: 20px;\n                margin: 0% auto;\n                left: 0;\n                right: 0;\n            }\n\n            .flash--top{\n                top: 20px;\n                margin: 0% auto;\n                left: 0;\n                right: 0;\n            }\n\n            .flash--topleft{\n                top: 20px;\n                left: 20px;\n            }\n\n            .flash--topright{\n                top: 20px;\n                right: 20px;\n            }\n\n            .flash--bottomleft{\n                bottom: 20px;\n                left: 20px;\n            }\n\n            .flash--bottomright{\n                bottom: 20px;\n                right: 20px;\n            }\n\n            .flash__message{\n                padding: 10px;\n                border-radius: .2857rem;\n                align-items: center;\n                justify-content: space-around;\n                display: flex;\n            }\n\n            .flash__text{\n                padding-right: 10px;\n                padding-left: 10px;\n                font-family: sans-serif;\n            }\n\n            .flash__message--" + Type_1.default.ERROR + "{\n                background-color: " + Color_1.default.ERROR + ";\n                color: white;\n            }\n\n            .flash__message--" + Type_1.default.OK + "{\n                background-color: " + Color_1.default.OK + ";\n                color: white;\n            }\n\n            .flash__message--" + Type_1.default.WARNING + "{\n                background-color: " + Color_1.default.WARNING + ";\n                color: white;\n            }\n\n            .flash__message--" + Type_1.default.INFO + "{\n                background-color: " + Color_1.default.INFO + ";\n                color: white;\n            }\n\n            .flash__close{\n                cursor: pointer;\n                opacity: 0;\n            }\n\n            .flash__close:hover{\n                transition : all 0.5s ease;\n            }\n        ";
     };
     return KamiFlash;
 }(kami_component_1.default));
