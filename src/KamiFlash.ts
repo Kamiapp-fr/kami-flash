@@ -124,8 +124,6 @@ class KamiFlash extends KamiComponent {
      */
     public connectedCallback(): void {
         if (this.flash && this.close) {
-            console.log(this.props);
-
             this.flash.animate(
                 this.animations[Position[this.props.position]].enter,
                 this.animationOptions

@@ -17514,7 +17514,6 @@
         KamiFlash.prototype.connectedCallback = function () {
             var _this = this;
             if (this.flash && this.close) {
-                console.log(this.props);
                 this.flash.animate(this.animations[Position$1[this.props.position]].enter, this.animationOptions);
                 setTimeout(function () {
                     _this.close.animate([

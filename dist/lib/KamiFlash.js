@@ -96,7 +96,6 @@ var KamiFlash = /** @class */ (function (_super) {
     KamiFlash.prototype.connectedCallback = function () {
         var _this = this;
         if (this.flash && this.close) {
-            console.log(this.props);
             this.flash.animate(this.animations[Position_1.default[this.props.position]].enter, this.animationOptions);
             setTimeout(function () {
                 _this.close.animate([
