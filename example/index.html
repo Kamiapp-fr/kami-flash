@@ -61,6 +61,8 @@
             //declare flash component
             customElements.define('kami-flash', KamiFlash);
 
+            KamiFlash.createFlash('kami-flash','INFO','Flash generate this the createFlash() methode','BOTTOM')
+
             //get all button
             let buttons = document.querySelectorAll('button');
             buttons.forEach((button)=>{

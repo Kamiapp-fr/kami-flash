@@ -250,6 +250,26 @@ class KamiFlash extends KamiComponent {
             }
         `;
     }
+
+    /**
+     * A static methode to create flash component and append
+     * this directly to the body.
+     * @param tagName {String} - your KamiFlash tag name
+     * @param type {String} - flash type
+     * @param message {String} - flash message
+     * @param position {String} - flash position
+     */
+    static createFlash(tagName: string, type: string, message: string, position: string) {
+        let flash = document.createElement(tagName);
+        flash.setAttribute('type', type);
+        flash.setAttribute('position', position);
+
+        if (message != '') {
+            flash.setAttribute('message', message);
+        }
+
+        document.body.appendChild(flash);
+    }
 }
 
 export default KamiFlash;

@@ -45,5 +45,14 @@ declare class KamiFlash extends KamiComponent {
     connectedCallback(): void;
     renderHtml(): string;
     renderStyle(): string;
+    /**
+     * A static methode to create flash component and append
+     * this directly to the body.
+     * @param tagName {String} - your KamiFlash tag name
+     * @param type {String} - flash type
+     * @param message {String} - flash message
+     * @param position {String} - flash position
+     */
+    static createFlash(tagName: string, type: string, message: string, position: string): void;
 }
 export default KamiFlash;

@@ -17526,6 +17526,23 @@ var KamiFlash = /** @class */ (function (_super) {
     KamiFlash.prototype.renderStyle = function () {
         return "\n\n            .flash{\n                position: fixed;\n                display: flex;\n                justify-content: center;\n                align-items: center;\n                transition: all 1s ease;\n                z-index: 100;\n                width: fit-content;\n            }\n\n            .flash--bottom{\n                bottom: 20px;\n                margin: 0% auto;\n                left: 0;\n                right: 0;\n            }\n\n            .flash--top{\n                top: 20px;\n                margin: 0% auto;\n                left: 0;\n                right: 0;\n            }\n\n            .flash--topleft{\n                top: 20px;\n                left: 20px;\n            }\n\n            .flash--topright{\n                top: 20px;\n                right: 20px;\n            }\n\n            .flash--bottomleft{\n                bottom: 20px;\n                left: 20px;\n            }\n\n            .flash--bottomright{\n                bottom: 20px;\n                right: 20px;\n            }\n\n            .flash__message{\n                padding: 10px;\n                border-radius: .2857rem;\n                align-items: center;\n                justify-content: space-around;\n                display: flex;\n            }\n\n            .flash__text{\n                padding-right: 10px;\n                padding-left: 10px;\n                font-family: sans-serif;\n            }\n\n            .flash__message--" + Type$1.ERROR + "{\n                background-color: " + Color$1.ERROR + ";\n                color: white;\n            }\n\n            .flash__message--" + Type$1.OK + "{\n                background-color: " + Color$1.OK + ";\n                color: white;\n            }\n\n            .flash__message--" + Type$1.WARNING + "{\n                background-color: " + Color$1.WARNING + ";\n                color: white;\n            }\n\n            .flash__message--" + Type$1.INFO + "{\n                background-color: " + Color$1.INFO + ";\n                color: white;\n            }\n\n            .flash__close{\n                cursor: pointer;\n                opacity: 0;\n            }\n\n            .flash__close:hover{\n                transition : all 0.5s ease;\n            }\n        ";
     };
+    /**
+     * A static methode to create flash component and append
+     * this directly to the body.
+     * @param tagName {String} - your KamiFlash tag name
+     * @param type {String} - flash type
+     * @param message {String} - flash message
+     * @param position {String} - flash position
+     */
+    KamiFlash.createFlash = function (tagName, type, message, position) {
+        var flash = document.createElement(tagName);
+        flash.setAttribute('type', type);
+        flash.setAttribute('position', position);
+        if (message != '') {
+            flash.setAttribute('message', message);
+        }
+        document.body.appendChild(flash);
+    };
     return KamiFlash;
 }(KamiComponent));
 
