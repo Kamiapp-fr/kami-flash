@@ -25,6 +25,23 @@ import Position from './enum/Position';
  * @extends KamiComponent
  */
 class KamiFlash extends KamiComponent {
+    static get tag(): string {
+        return 'kami-flash';
+    }
+
+    static initialPosition: number = 20;
+
+    static ofsetPosition: number = 50;
+
+    static stacked: any = {
+        BOTTOM: KamiFlash.initialPosition,
+        BOTTOMLEFT: KamiFlash.initialPosition,
+        BOTTOMRIGHT: KamiFlash.initialPosition,
+        TOP: KamiFlash.initialPosition,
+        TOPLEFT: KamiFlash.initialPosition,
+        TOPRIGHT: KamiFlash.initialPosition
+    };
+
     /**
      * @property {HTMLElement | null} close - the close btn
      */
@@ -86,8 +103,12 @@ class KamiFlash extends KamiComponent {
         };
     }
 
+    get position(): string {
+        return this.getAttribute('position') || 'BOTTOM';
+    }
+
     static get observedAttributes() {
-        return ['type', 'message', 'position'];
+        return ['type', 'message', 'position', 'stack'];
     }
 
     public setProperties(): void {
@@ -97,7 +118,8 @@ class KamiFlash extends KamiComponent {
         this.props = this.observe({
             position: position,
             type: type,
-            message: this.getAttribute('message') || 'Write your message flash here'
+            message: this.getAttribute('message') || 'Write your message flash here',
+            stack: this.toBoolean(this.getAttribute('stack')) || true
         });
     }
 
@@ -114,6 +136,9 @@ class KamiFlash extends KamiComponent {
             ).onfinish = () => {
                 //delete this component.
                 this.remove();
+                if (this.props.stack) {
+                    KamiFlash.stacked[this.position] -= KamiFlash.ofsetPosition;
+                }
             };
         });
     }
@@ -123,6 +148,13 @@ class KamiFlash extends KamiComponent {
      * Here it use to add an enter animation
      */
     public connectedCallback(): void {
+        if (this.toBoolean(this.getAttribute('stack'))) {
+            this.props.stacked = KamiFlash.stacked[this.position];
+            KamiFlash.stacked[this.position] += KamiFlash.ofsetPosition;
+        } else {
+            this.props.stacked = KamiFlash.initialPosition;
+        }
+
         if (this.flash && this.close) {
             this.flash.animate(
                 this.animations[Position[this.props.position]].enter,
@@ -171,36 +203,36 @@ class KamiFlash extends KamiComponent {
             }
 
             .flash--bottom{
-                bottom: 20px;
+                bottom: ${this.props.stacked}px;
                 margin: 0% auto;
                 left: 0;
                 right: 0;
             }
 
             .flash--top{
-                top: 20px;
+                top: ${this.props.stacked}px;
                 margin: 0% auto;
                 left: 0;
                 right: 0;
             }
 
             .flash--topleft{
-                top: 20px;
+                top: ${this.props.stacked}px;
                 left: 20px;
             }
 
             .flash--topright{
-                top: 20px;
+                top: ${this.props.stacked}px;
                 right: 20px;
             }
 
             .flash--bottomleft{
-                bottom: 20px;
+                bottom: ${this.props.stacked}px;
                 left: 20px;
             }
 
             .flash--bottomright{
-                bottom: 20px;
+                bottom: ${this.props.stacked}px;
                 right: 20px;
             }
 
@@ -257,10 +289,17 @@ class KamiFlash extends KamiComponent {
      * @param message {String} - flash message
      * @param position {String} - flash position
      */
-    static createFlash(tagName: string, type: string, message: string, position: string) {
+    static createFlash(
+        tagName: string = KamiFlash.tag,
+        type: string,
+        message: string,
+        position: string,
+        stack: boolean = true
+    ) {
         let flash = document.createElement(tagName);
         flash.setAttribute('type', type);
         flash.setAttribute('position', position);
+        flash.setAttribute('stack', stack.toString());
 
         if (message != '') {
             flash.setAttribute('message', message);

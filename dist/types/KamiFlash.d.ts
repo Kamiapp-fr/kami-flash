@@ -10,6 +10,10 @@ import KamiComponent from 'kami-component';
  * @extends KamiComponent
  */
 declare class KamiFlash extends KamiComponent {
+    static readonly tag: string;
+    static initialPosition: number;
+    static ofsetPosition: number;
+    static stacked: any;
     /**
      * @property {HTMLElement | null} close - the close btn
      */
@@ -35,6 +39,7 @@ declare class KamiFlash extends KamiComponent {
      */
     private animationOptions;
     constructor();
+    readonly position: string;
     static readonly observedAttributes: string[];
     setProperties(): void;
     initEventListener(): void;
@@ -53,6 +58,6 @@ declare class KamiFlash extends KamiComponent {
      * @param message {String} - flash message
      * @param position {String} - flash position
      */
-    static createFlash(tagName: string, type: string, message: string, position: string): void;
+    static createFlash(tagName: string | undefined, type: string, message: string, position: string, stack?: boolean): void;
 }
 export default KamiFlash;
