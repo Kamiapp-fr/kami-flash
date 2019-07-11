@@ -4,16 +4,33 @@ import 'web-animations-js';
 import '@polymer/iron-icon/iron-icon.js';
 import '@polymer/iron-icons/iron-icons.js';
 import KamiComponent from 'kami-component';
+import IPosition from './interfaces/IPosition';
 /**
  * Create a simple flash message
  * @class KamiFlash
  * @extends KamiComponent
  */
 declare class KamiFlash extends KamiComponent {
+    /**
+     * @static
+     * @property {string} tag - the component tag
+     */
     static readonly tag: string;
+    /**
+     * @static
+     * @property {number} initialPosition - the initial position of flash
+     */
     static initialPosition: number;
+    /**
+     * @static
+     * @property {number} ofsetPosition - the ofset to add at the flash position if is stack
+     */
     static ofsetPosition: number;
-    static stacked: any;
+    /**
+     * @static
+     * @property {IPosition} stacked - all the current stack position for each flash
+     */
+    static stacked: IPosition;
     /**
      * @property {HTMLElement | null} close - the close btn
      */

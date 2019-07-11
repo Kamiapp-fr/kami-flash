@@ -17473,6 +17473,10 @@ var KamiFlash = /** @class */ (function (_super) {
         return _this;
     }
     Object.defineProperty(KamiFlash, "tag", {
+        /**
+         * @static
+         * @property {string} tag - the component tag
+         */
         get: function () {
             return 'kami-flash';
         },
@@ -17488,12 +17492,7 @@ var KamiFlash = /** @class */ (function (_super) {
     });
     Object.defineProperty(KamiFlash, "observedAttributes", {
         get: function () {
-            return [
-                'type',
-                'message',
-                'position',
-                'stack'
-            ];
+            return ['type', 'message', 'position', 'stack'];
         },
         enumerable: true,
         configurable: true
@@ -17530,6 +17529,7 @@ var KamiFlash = /** @class */ (function (_super) {
      */
     KamiFlash.prototype.connectedCallback = function () {
         var _this = this;
+        //update the position if the flash is stacked
         if (this.toBoolean(this.getAttribute('stack'))) {
             this.props.stacked = KamiFlash.stacked[this.position];
             KamiFlash.stacked[this.position] += KamiFlash.ofsetPosition;
@@ -17575,15 +17575,27 @@ var KamiFlash = /** @class */ (function (_super) {
         }
         document.body.appendChild(flash);
     };
+    /**
+     * @static
+     * @property {number} initialPosition - the initial position of flash
+     */
     KamiFlash.initialPosition = 20;
+    /**
+     * @static
+     * @property {number} ofsetPosition - the ofset to add at the flash position if is stack
+     */
     KamiFlash.ofsetPosition = 50;
+    /**
+     * @static
+     * @property {IPosition} stacked - all the current stack position for each flash
+     */
     KamiFlash.stacked = {
-        'BOTTOM': KamiFlash.initialPosition,
-        'BOTTOMLEFT': KamiFlash.initialPosition,
-        'BOTTOMRIGHT': KamiFlash.initialPosition,
-        'TOP': KamiFlash.initialPosition,
-        'TOPLEFT': KamiFlash.initialPosition,
-        'TOPRIGHT': KamiFlash.initialPosition
+        BOTTOM: KamiFlash.initialPosition,
+        BOTTOMLEFT: KamiFlash.initialPosition,
+        BOTTOMRIGHT: KamiFlash.initialPosition,
+        TOP: KamiFlash.initialPosition,
+        TOPLEFT: KamiFlash.initialPosition,
+        TOPRIGHT: KamiFlash.initialPosition
     };
     return KamiFlash;
 }(KamiComponent));

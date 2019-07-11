@@ -12,6 +12,7 @@ import topAnimation from './animations/topAnimation';
 
 //import interfaces
 import IAnimation from './interfaces/IAnimation';
+import IPosition from './interfaces/IPosition';
 
 //import enum
 import Type from './enum/Type';
@@ -25,15 +26,31 @@ import Position from './enum/Position';
  * @extends KamiComponent
  */
 class KamiFlash extends KamiComponent {
+    /**
+     * @static
+     * @property {string} tag - the component tag
+     */
     static get tag(): string {
         return 'kami-flash';
     }
 
+    /**
+     * @static
+     * @property {number} initialPosition - the initial position of flash
+     */
     static initialPosition: number = 20;
 
+    /**
+     * @static
+     * @property {number} ofsetPosition - the ofset to add at the flash position if is stack
+     */
     static ofsetPosition: number = 50;
 
-    static stacked: any = {
+    /**
+     * @static
+     * @property {IPosition} stacked - all the current stack position for each flash
+     */
+    static stacked: IPosition = {
         BOTTOM: KamiFlash.initialPosition,
         BOTTOMLEFT: KamiFlash.initialPosition,
         BOTTOMRIGHT: KamiFlash.initialPosition,
@@ -113,7 +130,7 @@ class KamiFlash extends KamiComponent {
 
     public setProperties(): void {
         let type: any = this.getAttribute('type') || 'OK';
-        let position: any = this.getAttribute('position') || 'BOTTOM';
+        let position: string = this.getAttribute('position') || 'BOTTOM';
 
         this.props = this.observe({
             position: position,
@@ -148,6 +165,7 @@ class KamiFlash extends KamiComponent {
      * Here it use to add an enter animation
      */
     public connectedCallback(): void {
+        //update the position if the flash is stacked
         if (this.toBoolean(this.getAttribute('stack'))) {
             this.props.stacked = KamiFlash.stacked[this.position];
             KamiFlash.stacked[this.position] += KamiFlash.ofsetPosition;

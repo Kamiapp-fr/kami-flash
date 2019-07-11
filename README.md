@@ -59,8 +59,8 @@ See the *props section* to customize your flash component.
 
 <!-- Generate an error message with the text 'An error message !'-->
 <flash-exemple
-    typeprops="ERROR"
-    messageprops="An error message !"
+    type="ERROR"
+    message="An error message !"
 >
 </flash-exemple>
 
@@ -69,10 +69,10 @@ See the *props section* to customize your flash component.
 
 | name          |  type    | description                 | required | default value                  |
 |-------------- |:--------:|-----------------------------|----------|--------------------------------|
-| typeProps     | Type     | The flash type              | false    | OK                             |
-| messageProps  | String   | The flash message           | false    | 'Write your message flash here'|
-| positionProps | Position | The flash position          | false    | BOTTOM                         |
-
+| type          | Type     | The flash type              | false    | OK                             |
+| message       | String   | The flash message           | false    | 'Write your message flash here'|
+| position      | Position | The flash position          | false    | BOTTOM                         |
+| stack         | Boolean  | Stack or not all flash      | false    | true                           |
 
 ## Contribute
 
