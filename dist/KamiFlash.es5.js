@@ -17452,6 +17452,8 @@ var KamiFlash = /** @class */ (function (_super) {
         //get dom from the component
         _this.close = _this.wrapper.querySelector('#close');
         _this.flash = _this.wrapper.querySelector('.flash');
+        _this.index = 0;
+        _this.stackedPosition = 0;
         //init animation
         _this.bottomAnimation = bottomAnimation;
         _this.topAnimation = topAnimation;
@@ -17479,6 +17481,13 @@ var KamiFlash = /** @class */ (function (_super) {
          */
         get: function () {
             return 'kami-flash';
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(KamiFlash.prototype, "dom", {
+        get: function () {
+            return this.flash;
         },
         enumerable: true,
         configurable: true
@@ -17518,6 +17527,18 @@ var KamiFlash = /** @class */ (function (_super) {
                 //delete this component.
                 _this.remove();
                 if (_this.props.stack) {
+                    KamiFlash.stackedFlash[_this.position].forEach(function (flash) {
+                        //update other flash only if it sup a the current flash
+                        if (flash.index > _this.index) {
+                            //update the stackedPosition property
+                            flash.stackedPosition = flash.stackedPosition - KamiFlash.ofsetPosition;
+                            //update the position of all sup stacked flash
+                            _this.position.substring(0, 6) == 'BOTTOM' ?
+                                flash.dom.style.bottom = flash.stackedPosition + "px" :
+                                flash.dom.style.top = flash.stackedPosition + "px";
+                        }
+                    });
+                    //descrease the current static property
                     KamiFlash.stacked[_this.position] -= KamiFlash.ofsetPosition;
                 }
             };
@@ -17531,8 +17552,14 @@ var KamiFlash = /** @class */ (function (_super) {
         var _this = this;
         //update the position if the flash is stacked
         if (this.toBoolean(this.getAttribute('stack'))) {
+            //update the flash position
             this.props.stacked = KamiFlash.stacked[this.position];
+            this.stackedPosition = KamiFlash.stacked[this.position];
             KamiFlash.stacked[this.position] += KamiFlash.ofsetPosition;
+            //set the index of the flash into with the stacked flash length
+            this.index = KamiFlash.stackedFlash[this.position].length;
+            //push into the stackedFlash property the flash
+            KamiFlash.stackedFlash[this.position].push(this);
         }
         else {
             this.props.stacked = KamiFlash.initialPosition;
@@ -17553,7 +17580,7 @@ var KamiFlash = /** @class */ (function (_super) {
         return "\n            <div class=\"flash " + Position$1[this.props.position] + "\">\n                <div class=\"flash__message flash__message--" + Type$1[this.props.type] + " shadow__bottom--30px\">\n                    <iron-icon icon=\"" + Icon$1[this.props.type] + "\"></iron-icon>\n                    <div class=\"flash__text\">" + this.props.message + "</div>\n                    <iron-icon class=\"flash__close\" id=\"close\" icon=\"close\"></iron-icon>\n                </div>\n            </div>\n        ";
     };
     KamiFlash.prototype.renderStyle = function () {
-        return "\n\n            .flash{\n                position: fixed;\n                display: flex;\n                justify-content: center;\n                align-items: center;\n                transition: all 1s ease;\n                z-index: 100;\n                width: fit-content;\n            }\n\n            .flash--bottom{\n                bottom: " + this.props.stacked + "px;\n                margin: 0% auto;\n                left: 0;\n                right: 0;\n            }\n\n            .flash--top{\n                top: " + this.props.stacked + "px;\n                margin: 0% auto;\n                left: 0;\n                right: 0;\n            }\n\n            .flash--topleft{\n                top: " + this.props.stacked + "px;\n                left: 20px;\n            }\n\n            .flash--topright{\n                top: " + this.props.stacked + "px;\n                right: 20px;\n            }\n\n            .flash--bottomleft{\n                bottom: " + this.props.stacked + "px;\n                left: 20px;\n            }\n\n            .flash--bottomright{\n                bottom: " + this.props.stacked + "px;\n                right: 20px;\n            }\n\n            .flash__message{\n                padding: 10px;\n                border-radius: .2857rem;\n                align-items: center;\n                justify-content: space-around;\n                display: flex;\n            }\n\n            .flash__text{\n                padding-right: 10px;\n                padding-left: 10px;\n                font-family: sans-serif;\n            }\n\n            .flash__message--" + Type$1.ERROR + "{\n                background-color: " + Color$1.ERROR + ";\n                color: white;\n            }\n\n            .flash__message--" + Type$1.OK + "{\n                background-color: " + Color$1.OK + ";\n                color: white;\n            }\n\n            .flash__message--" + Type$1.WARNING + "{\n                background-color: " + Color$1.WARNING + ";\n                color: white;\n            }\n\n            .flash__message--" + Type$1.INFO + "{\n                background-color: " + Color$1.INFO + ";\n                color: white;\n            }\n\n            .flash__close{\n                cursor: pointer;\n                opacity: 0;\n            }\n\n            .flash__close:hover{\n                transition : all 0.5s ease;\n            }\n        ";
+        return "\n\n            .flash{\n                position: fixed;\n                display: flex;\n                justify-content: center;\n                align-items: center;\n                transition: all 0.5s ease;\n                z-index: 100;\n                width: fit-content;\n            }\n\n            .flash--bottom{\n                bottom: " + this.props.stacked + "px;\n                margin: 0% auto;\n                left: 0;\n                right: 0;\n            }\n\n            .flash--top{\n                top: " + this.props.stacked + "px;\n                margin: 0% auto;\n                left: 0;\n                right: 0;\n            }\n\n            .flash--topleft{\n                top: " + this.props.stacked + "px;\n                left: 20px;\n            }\n\n            .flash--topright{\n                top: " + this.props.stacked + "px;\n                right: 20px;\n            }\n\n            .flash--bottomleft{\n                bottom: " + this.props.stacked + "px;\n                left: 20px;\n            }\n\n            .flash--bottomright{\n                bottom: " + this.props.stacked + "px;\n                right: 20px;\n            }\n\n            .flash__message{\n                padding: 10px;\n                border-radius: .2857rem;\n                align-items: center;\n                justify-content: space-around;\n                display: flex;\n            }\n\n            .flash__text{\n                padding-right: 10px;\n                padding-left: 10px;\n                font-family: sans-serif;\n            }\n\n            .flash__message--" + Type$1.ERROR + "{\n                background-color: " + Color$1.ERROR + ";\n                color: white;\n            }\n\n            .flash__message--" + Type$1.OK + "{\n                background-color: " + Color$1.OK + ";\n                color: white;\n            }\n\n            .flash__message--" + Type$1.WARNING + "{\n                background-color: " + Color$1.WARNING + ";\n                color: white;\n            }\n\n            .flash__message--" + Type$1.INFO + "{\n                background-color: " + Color$1.INFO + ";\n                color: white;\n            }\n\n            .flash__close{\n                cursor: pointer;\n                opacity: 0;\n            }\n\n            .flash__close:hover{\n                transition : all 0.5s ease;\n            }\n        ";
     };
     /**
      * A static methode to create flash component and append
@@ -17596,6 +17623,14 @@ var KamiFlash = /** @class */ (function (_super) {
         TOP: KamiFlash.initialPosition,
         TOPLEFT: KamiFlash.initialPosition,
         TOPRIGHT: KamiFlash.initialPosition
+    };
+    KamiFlash.stackedFlash = {
+        BOTTOM: [],
+        BOTTOMLEFT: [],
+        BOTTOMRIGHT: [],
+        TOP: [],
+        TOPLEFT: [],
+        TOPRIGHT: []
     };
     return KamiFlash;
 }(KamiComponent));

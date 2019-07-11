@@ -3,12 +3,12 @@
  * @interface IPosition
  */
 interface IPosition {
-    BOTTOM: number;
-    BOTTOMLEFT: number;
-    BOTTOMRIGHT: number;
-    TOP: number;
-    TOPLEFT: number;
-    TOPRIGHT: number;
-    [key: string]: number;
+    BOTTOM: any;
+    BOTTOMLEFT: any;
+    BOTTOMRIGHT: any;
+    TOP: any;
+    TOPLEFT: any;
+    TOPRIGHT: any;
+    [key: string]: any;
 }
 export default IPosition;

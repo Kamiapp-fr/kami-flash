@@ -59,15 +59,24 @@ class KamiFlash extends KamiComponent {
         TOPRIGHT: KamiFlash.initialPosition
     };
 
+    static stackedFlash: IPosition = {
+        BOTTOM: [],
+        BOTTOMLEFT: [],
+        BOTTOMRIGHT: [],
+        TOP: [],
+        TOPLEFT: [],
+        TOPRIGHT: []
+    };
+
     /**
      * @property {HTMLElement | null} close - the close btn
      */
-    private close: HTMLElement | null;
+    private close: HTMLElement;
 
     /**
      * @property {HTMLElement | null} flash - the dom structure
      */
-    private flash: HTMLElement | null;
+    private flash: HTMLElement;
 
     /**
      * @property {IAnimation} bottomAnimation - animations for bottom element
@@ -89,12 +98,20 @@ class KamiFlash extends KamiComponent {
      */
     private animationOptions: KeyframeAnimationOptions;
 
+    public index: number;
+
+    public stackedPosition: number;
+
     constructor() {
         super();
 
         //get dom from the component
-        this.close = this.wrapper.querySelector('#close');
-        this.flash = this.wrapper.querySelector('.flash');
+        this.close = this.wrapper.querySelector('#close') as HTMLElement;
+        this.flash = this.wrapper.querySelector('.flash') as HTMLElement;
+
+        this.index = 0;
+
+        this.stackedPosition = 0;
 
         //init animation
         this.bottomAnimation = bottomAnimation;
@@ -120,6 +137,10 @@ class KamiFlash extends KamiComponent {
         };
     }
 
+    get dom(): HTMLElement {
+        return this.flash;
+    }
+
     get position(): string {
         return this.getAttribute('position') || 'BOTTOM';
     }
@@ -143,8 +164,8 @@ class KamiFlash extends KamiComponent {
     public initEventListener(): void {
         //reinit this property because this method
         //is call before the constructor of this class
-        this.flash = this.wrapper.querySelector('.flash');
-        this.close = this.wrapper.querySelector('#close');
+        this.flash = this.wrapper.querySelector('.flash') as HTMLElement;
+        this.close = this.wrapper.querySelector('#close') as HTMLElement;
 
         this.close!.addEventListener('click', () => {
             this.flash!.animate(
@@ -154,6 +175,20 @@ class KamiFlash extends KamiComponent {
                 //delete this component.
                 this.remove();
                 if (this.props.stack) {
+                    KamiFlash.stackedFlash[this.position].forEach((flash: this) => {
+                        //update other flash only if it sup a the current flash
+                        if (flash.index > this.index) {
+                            //update the stackedPosition property
+                            flash.stackedPosition = flash.stackedPosition - KamiFlash.ofsetPosition;
+
+                            //update the position of all sup stacked flash
+                            this.position.substring(0, 6) == 'BOTTOM'
+                                ? (flash.dom.style.bottom = `${flash.stackedPosition}px`)
+                                : (flash.dom.style.top = `${flash.stackedPosition}px`);
+                        }
+                    });
+
+                    //descrease the current static property
                     KamiFlash.stacked[this.position] -= KamiFlash.ofsetPosition;
                 }
             };
@@ -167,8 +202,16 @@ class KamiFlash extends KamiComponent {
     public connectedCallback(): void {
         //update the position if the flash is stacked
         if (this.toBoolean(this.getAttribute('stack'))) {
+            //update the flash position
             this.props.stacked = KamiFlash.stacked[this.position];
+            this.stackedPosition = KamiFlash.stacked[this.position];
             KamiFlash.stacked[this.position] += KamiFlash.ofsetPosition;
+
+            //set the index of the flash into with the stacked flash length
+            this.index = KamiFlash.stackedFlash[this.position].length;
+
+            //push into the stackedFlash property the flash
+            KamiFlash.stackedFlash[this.position].push(this);
         } else {
             this.props.stacked = KamiFlash.initialPosition;
         }
@@ -215,7 +258,7 @@ class KamiFlash extends KamiComponent {
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                transition: all 1s ease;
+                transition: all 0.5s ease;
                 z-index: 100;
                 width: fit-content;
             }
