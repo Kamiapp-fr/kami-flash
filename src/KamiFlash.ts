@@ -59,6 +59,10 @@ class KamiFlash extends KamiComponent {
         TOPRIGHT: KamiFlash.initialPosition
     };
 
+    /**
+     * @static
+     * @property {IPosition} stackedFlash - all stacked flash.
+     */
     static stackedFlash: IPosition = {
         BOTTOM: [],
         BOTTOMLEFT: [],
@@ -98,8 +102,14 @@ class KamiFlash extends KamiComponent {
      */
     private animationOptions: KeyframeAnimationOptions;
 
+    /**
+     * @property {number} index - index of the flash
+     */
     public index: number;
 
+    /**
+     * @property {number} stackedPosition - store the stacked position of the flash
+     */
     public stackedPosition: number;
 
     constructor() {
@@ -110,7 +120,6 @@ class KamiFlash extends KamiComponent {
         this.flash = this.wrapper.querySelector('.flash') as HTMLElement;
 
         this.index = 0;
-
         this.stackedPosition = 0;
 
         //init animation

@@ -31,6 +31,10 @@ declare class KamiFlash extends KamiComponent {
      * @property {IPosition} stacked - all the current stack position for each flash
      */
     static stacked: IPosition;
+    /**
+     * @static
+     * @property {IPosition} stackedFlash - all stacked flash.
+     */
     static stackedFlash: IPosition;
     /**
      * @property {HTMLElement | null} close - the close btn
@@ -56,7 +60,13 @@ declare class KamiFlash extends KamiComponent {
      * @property {KeyframeAnimationOptions} animationOptions - animation options
      */
     private animationOptions;
+    /**
+     * @property {number} index - index of the flash
+     */
     index: number;
+    /**
+     * @property {number} stackedPosition - store the stacked position of the flash
+     */
     stackedPosition: number;
     constructor();
     readonly dom: HTMLElement;

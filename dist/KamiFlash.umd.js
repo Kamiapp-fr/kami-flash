@@ -17539,9 +17539,9 @@
                                 //update the stackedPosition property
                                 flash.stackedPosition = flash.stackedPosition - KamiFlash.ofsetPosition;
                                 //update the position of all sup stacked flash
-                                _this.position.substring(0, 6) == 'BOTTOM' ?
-                                    flash.dom.style.bottom = flash.stackedPosition + "px" :
-                                    flash.dom.style.top = flash.stackedPosition + "px";
+                                _this.position.substring(0, 6) == 'BOTTOM'
+                                    ? (flash.dom.style.bottom = flash.stackedPosition + "px")
+                                    : (flash.dom.style.top = flash.stackedPosition + "px");
                             }
                         });
                         //descrease the current static property
@@ -17630,6 +17630,10 @@
             TOPLEFT: KamiFlash.initialPosition,
             TOPRIGHT: KamiFlash.initialPosition
         };
+        /**
+         * @static
+         * @property {IPosition} stackedFlash - all stacked flash.
+         */
         KamiFlash.stackedFlash = {
             BOTTOM: [],
             BOTTOMLEFT: [],
