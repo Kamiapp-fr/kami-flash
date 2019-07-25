@@ -30,7 +30,7 @@ class KamiFlash extends KamiComponent {
      * @static
      * @property {string} tag - the component tag
      */
-    static get tag(): string {
+    static get tag(): any {
         return 'kami-flash';
     }
 

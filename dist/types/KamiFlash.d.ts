@@ -15,7 +15,7 @@ declare class KamiFlash extends KamiComponent {
      * @static
      * @property {string} tag - the component tag
      */
-    static readonly tag: string;
+    static readonly tag: any;
     /**
      * @static
      * @property {number} initialPosition - the initial position of flash
