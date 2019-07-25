@@ -37,14 +37,6 @@ declare class KamiFlash extends KamiComponent {
      */
     static stackedFlash: IPosition;
     /**
-     * @property {HTMLElement | null} close - the close btn
-     */
-    private close;
-    /**
-     * @property {HTMLElement | null} flash - the dom structure
-     */
-    private flash;
-    /**
      * @property {IAnimation} bottomAnimation - animations for bottom element
      */
     private bottomAnimation;
@@ -68,10 +60,18 @@ declare class KamiFlash extends KamiComponent {
      * @property {number} stackedPosition - store the stacked position of the flash
      */
     stackedPosition: number;
-    constructor();
+    /**
+     * @property {HTMLElement | null} close - the close btn
+     */
+    private readonly closeBtn;
+    /**
+     * @property {HTMLElement | null} flash - the dom structure
+     */
+    private readonly flash;
     readonly dom: HTMLElement;
     readonly position: string;
     static readonly observedAttributes: string[];
+    constructor();
     setProperties(): void;
     initEventListener(): void;
     /**
@@ -79,6 +79,7 @@ declare class KamiFlash extends KamiComponent {
      * Here it use to add an enter animation
      */
     connectedCallback(): void;
+    close(): void;
     renderHtml(): string;
     renderStyle(): string;
     /**

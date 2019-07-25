@@ -73,16 +73,6 @@ class KamiFlash extends KamiComponent {
     };
 
     /**
-     * @property {HTMLElement | null} close - the close btn
-     */
-    private close: HTMLElement;
-
-    /**
-     * @property {HTMLElement | null} flash - the dom structure
-     */
-    private flash: HTMLElement;
-
-    /**
      * @property {IAnimation} bottomAnimation - animations for bottom element
      */
     private bottomAnimation: IAnimation;
@@ -112,12 +102,34 @@ class KamiFlash extends KamiComponent {
      */
     public stackedPosition: number;
 
+    /**
+     * @property {HTMLElement | null} close - the close btn
+     */
+    private get closeBtn() {
+        return this.wrapper.querySelector('#close') as HTMLElement;
+    }
+
+    /**
+     * @property {HTMLElement | null} flash - the dom structure
+     */
+    private get flash() {
+        return this.wrapper.querySelector('.flash') as HTMLElement;
+    }
+
+    public get dom(): HTMLElement {
+        return this.flash;
+    }
+
+    public get position(): string {
+        return this.getAttribute('position') || 'BOTTOM';
+    }
+
+    public static get observedAttributes() {
+        return ['type', 'message', 'position', 'stack'];
+    }
+
     constructor() {
         super();
-
-        //get dom from the component
-        this.close = this.wrapper.querySelector('#close') as HTMLElement;
-        this.flash = this.wrapper.querySelector('.flash') as HTMLElement;
 
         this.index = 0;
         this.stackedPosition = 0;
@@ -146,18 +158,6 @@ class KamiFlash extends KamiComponent {
         };
     }
 
-    get dom(): HTMLElement {
-        return this.flash;
-    }
-
-    get position(): string {
-        return this.getAttribute('position') || 'BOTTOM';
-    }
-
-    static get observedAttributes() {
-        return ['type', 'message', 'position', 'stack'];
-    }
-
     public setProperties(): void {
         let type: any = this.getAttribute('type') || 'OK';
         let position: string = this.getAttribute('position') || 'BOTTOM';
@@ -171,37 +171,7 @@ class KamiFlash extends KamiComponent {
     }
 
     public initEventListener(): void {
-        //reinit this property because this method
-        //is call before the constructor of this class
-        this.flash = this.wrapper.querySelector('.flash') as HTMLElement;
-        this.close = this.wrapper.querySelector('#close') as HTMLElement;
-
-        this.close!.addEventListener('click', () => {
-            this.flash!.animate(
-                this.animations[Position[this.props.position]].out,
-                this.animationOptions
-            ).onfinish = () => {
-                //delete this component.
-                this.remove();
-                if (this.props.stack) {
-                    KamiFlash.stackedFlash[this.position].forEach((flash: this) => {
-                        //update other flash only if it sup a the current flash
-                        if (flash.index > this.index) {
-                            //update the stackedPosition property
-                            flash.stackedPosition = flash.stackedPosition - KamiFlash.ofsetPosition;
-
-                            //update the position of all sup stacked flash
-                            this.position.substring(0, 6) == 'BOTTOM'
-                                ? (flash.dom.style.bottom = `${flash.stackedPosition}px`)
-                                : (flash.dom.style.top = `${flash.stackedPosition}px`);
-                        }
-                    });
-
-                    //descrease the current static property
-                    KamiFlash.stacked[this.position] -= KamiFlash.ofsetPosition;
-                }
-            };
-        });
+        this.closeBtn.addEventListener('click', this.close.bind(this));
     }
 
     /**
@@ -225,24 +195,51 @@ class KamiFlash extends KamiComponent {
             this.props.stacked = KamiFlash.initialPosition;
         }
 
-        if (this.flash && this.close) {
+        if (this.flash && this.closeBtn) {
             this.flash.animate(
                 this.animations[Position[this.props.position]].enter,
                 this.animationOptions
             );
 
             setTimeout(() => {
-                this.close!.animate(
+                this.closeBtn.animate(
                     [
                         { opacity: '0', transform: 'translateX(20px) rotateZ(45deg)' },
                         { opacity: '1', transform: 'translateX(0px) rotateZ(0deg)' }
                     ] as Keyframe[],
                     this.animationOptions
                 ).onfinish = () => {
-                    this.close!.style.opacity = '1';
+                    this.closeBtn.style.opacity = '1';
                 };
             }, 400);
         }
+    }
+
+    public close() {
+        this.flash.animate(
+            this.animations[Position[this.props.position]].out,
+            this.animationOptions
+        ).onfinish = () => {
+            //delete this component.
+            this.remove();
+            if (this.props.stack) {
+                KamiFlash.stackedFlash[this.position].forEach((flash: this) => {
+                    //update other flash only if it sup a the current flash
+                    if (flash.index > this.index) {
+                        //update the stackedPosition property
+                        flash.stackedPosition = flash.stackedPosition - KamiFlash.ofsetPosition;
+
+                        //update the position of all sup stacked flash
+                        this.position.substring(0, 6) == 'BOTTOM'
+                            ? (flash.dom.style.bottom = `${flash.stackedPosition}px`)
+                            : (flash.dom.style.top = `${flash.stackedPosition}px`);
+                    }
+                });
+
+                //descrease the current static property
+                KamiFlash.stacked[this.position] -= KamiFlash.ofsetPosition;
+            }
+        };
     }
 
     public renderHtml(): string {
@@ -359,7 +356,7 @@ class KamiFlash extends KamiComponent {
      * @param message {String} - flash message
      * @param position {String} - flash position
      */
-    static createFlash(
+    public static createFlash(
         tagName: string = KamiFlash.tag,
         type: string,
         message: string,
