@@ -17465,9 +17465,9 @@
         __extends(KamiFlash, _super);
         function KamiFlash() {
             var _this = _super.call(this) || this;
-            _this.flashInLoad = true;
             _this.index = 0;
             _this.stackedPosition = 0;
+            _this.inLoad = true;
             //init animation
             _this.bottomAnimation = bottomAnimation;
             _this.topAnimation = topAnimation;
@@ -17520,6 +17520,9 @@
             configurable: true
         });
         Object.defineProperty(KamiFlash.prototype, "dom", {
+            /**
+             * @property {HTMLElement} dom - the flash dom
+             */
             get: function () {
                 return this.flash;
             },
@@ -17527,6 +17530,9 @@
             configurable: true
         });
         Object.defineProperty(KamiFlash.prototype, "position", {
+            /**
+             * @property {String} position - get the position attribute
+             */
             get: function () {
                 return this.getAttribute('position') || 'BOTTOM';
             },
@@ -17541,7 +17547,7 @@
             configurable: true
         });
         KamiFlash.prototype.setProperties = function () {
-            this.flashInLoad = true;
+            this.inLoad = true;
             var type = this.getAttribute('type') || 'OK';
             var position = this.getAttribute('position') || 'BOTTOM';
             this.props = this.observe({
@@ -17550,8 +17556,6 @@
                 message: this.getAttribute('message') || 'Write your message flash here',
                 stack: this.toBoolean(this.getAttribute('stack')) || true
             });
-        };
-        KamiFlash.prototype.initEventListener = function () {
         };
         /**
          * This method is call when the compenent it create.
@@ -17580,13 +17584,17 @@
                         { opacity: '0', transform: 'translateX(20px) rotateZ(45deg)' },
                         { opacity: '1', transform: 'translateX(0px) rotateZ(0deg)' }
                     ], _this.animationOptions).onfinish = function () {
-                        _this.flashInLoad = false;
+                        _this.inLoad = false;
                         _this.closeBtn.style.opacity = '1';
                         _this.closeBtn.addEventListener('click', _this.close.bind(_this));
                     };
                 }, 400);
             }
         };
+        /**
+         * Close the flash instance.
+         * @returns {Promise<KamiFlash>} the flash instance close
+         */
         KamiFlash.prototype.close = function () {
             var _this = this;
             return new Promise(function (res) {
@@ -17638,6 +17646,10 @@
             }
             document.body.appendChild(flash);
         };
+        /**
+         * Close all flashs instance.
+         * @returns {void}
+         */
         KamiFlash.closeAll = function () {
             var _loop_1 = function (key, flashs) {
                 flashs.forEach(function (flash) {

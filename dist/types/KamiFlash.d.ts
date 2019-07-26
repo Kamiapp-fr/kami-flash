@@ -36,7 +36,10 @@ declare class KamiFlash extends KamiComponent {
      * @property {IPosition} stackedFlash - all stacked flash.
      */
     static stackedFlash: IPosition;
-    flashInLoad: Boolean;
+    /**
+     * @property {Boolean} inLoad - return true if the component is in load
+     */
+    private inLoad;
     /**
      * @property {IAnimation} bottomAnimation - animations for bottom element
      */
@@ -69,17 +72,26 @@ declare class KamiFlash extends KamiComponent {
      * @property {HTMLElement | null} flash - the dom structure
      */
     private readonly flash;
+    /**
+     * @property {HTMLElement} dom - the flash dom
+     */
     readonly dom: HTMLElement;
+    /**
+     * @property {String} position - get the position attribute
+     */
     readonly position: string;
     static readonly observedAttributes: string[];
     constructor();
     setProperties(): void;
-    initEventListener(): void;
     /**
      * This method is call when the compenent it create.
      * Here it use to add an enter animation
      */
     connectedCallback(): void;
+    /**
+     * Close the flash instance.
+     * @returns {Promise<KamiFlash>} the flash instance close
+     */
     close(): Promise<KamiFlash>;
     renderHtml(): string;
     renderStyle(): string;
@@ -92,6 +104,10 @@ declare class KamiFlash extends KamiComponent {
      * @param position {String} - flash position
      */
     static createFlash(tagName: string | undefined, type: string, message: string, position: string, stack?: boolean): void;
+    /**
+     * Close all flashs instance.
+     * @returns {void}
+     */
     static closeAll(): void;
 }
 export default KamiFlash;

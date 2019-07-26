@@ -72,7 +72,10 @@ class KamiFlash extends KamiComponent {
         TOPRIGHT: [] as Array<KamiFlash>
     };
 
-    public flashInLoad: Boolean = true;
+    /**
+     * @property {Boolean} inLoad - return true if the component is in load
+     */
+    private inLoad: Boolean;
 
     /**
      * @property {IAnimation} bottomAnimation - animations for bottom element
@@ -118,10 +121,16 @@ class KamiFlash extends KamiComponent {
         return this.wrapper.querySelector('.flash') as HTMLElement;
     }
 
+    /**
+     * @property {HTMLElement} dom - the flash dom
+     */
     public get dom(): HTMLElement {
         return this.flash;
     }
 
+    /**
+     * @property {String} position - get the position attribute
+     */
     public get position(): string {
         return this.getAttribute('position') || 'BOTTOM';
     }
@@ -135,6 +144,7 @@ class KamiFlash extends KamiComponent {
 
         this.index = 0;
         this.stackedPosition = 0;
+        this.inLoad = true;
 
         //init animation
         this.bottomAnimation = bottomAnimation;
@@ -161,7 +171,7 @@ class KamiFlash extends KamiComponent {
     }
 
     public setProperties(): void {
-        this.flashInLoad = true;
+        this.inLoad = true;
         let type: any = this.getAttribute('type') || 'OK';
         let position: string = this.getAttribute('position') || 'BOTTOM';
 
@@ -172,8 +182,6 @@ class KamiFlash extends KamiComponent {
             stack: this.toBoolean(this.getAttribute('stack')) || true
         });
     }
-
-    public initEventListener(): void {}
 
     /**
      * This method is call when the compenent it create.
@@ -210,7 +218,7 @@ class KamiFlash extends KamiComponent {
                     ] as Keyframe[],
                     this.animationOptions
                 ).onfinish = () => {
-                    this.flashInLoad = false;
+                    this.inLoad = false;
                     this.closeBtn.style.opacity = '1';
                     this.closeBtn.addEventListener('click', this.close.bind(this));
                 };
@@ -218,6 +226,10 @@ class KamiFlash extends KamiComponent {
         }
     }
 
+    /**
+     * Close the flash instance.
+     * @returns {Promise<KamiFlash>} the flash instance close
+     */
     public close(): Promise<KamiFlash> {
         return new Promise(res => {
             this.flash.animate(
@@ -381,6 +393,10 @@ class KamiFlash extends KamiComponent {
         document.body.appendChild(flash);
     }
 
+    /**
+     * Close all flashs instance.
+     * @returns {void}
+     */
     public static closeAll() {
         for (const [key, flashs] of Object.entries(KamiFlash.stackedFlash)) {
             flashs.forEach((flash: KamiFlash) => {
