@@ -17459,6 +17459,7 @@ var KamiFlash = /** @class */ (function (_super) {
     __extends(KamiFlash, _super);
     function KamiFlash() {
         var _this = _super.call(this) || this;
+        _this.flashInLoad = true;
         _this.index = 0;
         _this.stackedPosition = 0;
         //init animation
@@ -17534,6 +17535,7 @@ var KamiFlash = /** @class */ (function (_super) {
         configurable: true
     });
     KamiFlash.prototype.setProperties = function () {
+        this.flashInLoad = true;
         var type = this.getAttribute('type') || 'OK';
         var position = this.getAttribute('position') || 'BOTTOM';
         this.props = this.observe({
@@ -17544,7 +17546,6 @@ var KamiFlash = /** @class */ (function (_super) {
         });
     };
     KamiFlash.prototype.initEventListener = function () {
-        this.closeBtn.addEventListener('click', this.close.bind(this));
     };
     /**
      * This method is call when the compenent it create.
@@ -17573,32 +17574,37 @@ var KamiFlash = /** @class */ (function (_super) {
                     { opacity: '0', transform: 'translateX(20px) rotateZ(45deg)' },
                     { opacity: '1', transform: 'translateX(0px) rotateZ(0deg)' }
                 ], _this.animationOptions).onfinish = function () {
+                    _this.flashInLoad = false;
                     _this.closeBtn.style.opacity = '1';
+                    _this.closeBtn.addEventListener('click', _this.close.bind(_this));
                 };
             }, 400);
         }
     };
     KamiFlash.prototype.close = function () {
         var _this = this;
-        this.flash.animate(this.animations[Position$1[this.props.position]].out, this.animationOptions).onfinish = function () {
-            //delete this component.
-            _this.remove();
-            if (_this.props.stack) {
-                KamiFlash.stackedFlash[_this.position].forEach(function (flash) {
-                    //update other flash only if it sup a the current flash
-                    if (flash.index > _this.index) {
-                        //update the stackedPosition property
-                        flash.stackedPosition = flash.stackedPosition - KamiFlash.ofsetPosition;
-                        //update the position of all sup stacked flash
-                        _this.position.substring(0, 6) == 'BOTTOM'
-                            ? (flash.dom.style.bottom = flash.stackedPosition + "px")
-                            : (flash.dom.style.top = flash.stackedPosition + "px");
-                    }
-                });
-                //descrease the current static property
-                KamiFlash.stacked[_this.position] -= KamiFlash.ofsetPosition;
-            }
-        };
+        return new Promise(function (res) {
+            _this.flash.animate(_this.animations[Position$1[_this.props.position]].out, _this.animationOptions).onfinish = function () {
+                //delete this component.
+                _this.remove();
+                if (_this.props.stack) {
+                    KamiFlash.stackedFlash[_this.position].forEach(function (flash) {
+                        //update other flash only if it sup a the current flash
+                        if (flash.index > _this.index) {
+                            //update the stackedPosition property}
+                            flash.stackedPosition = flash.stackedPosition - KamiFlash.ofsetPosition;
+                            //update the position of all sup stacked flash
+                            _this.position.substring(0, 6) == 'BOTTOM'
+                                ? (flash.dom.style.bottom = flash.stackedPosition + "px")
+                                : (flash.dom.style.top = flash.stackedPosition + "px");
+                        }
+                    });
+                    //descrease the current static property
+                    KamiFlash.stacked[_this.position] -= KamiFlash.ofsetPosition;
+                    res(_this);
+                }
+            };
+        });
     };
     KamiFlash.prototype.renderHtml = function () {
         return "\n            <div class=\"flash " + Position$1[this.props.position] + "\">\n                <div class=\"flash__message flash__message--" + Type$1[this.props.type] + " shadow__bottom--30px\">\n                    <iron-icon icon=\"" + Icon$1[this.props.type] + "\"></iron-icon>\n                    <div class=\"flash__text\">" + this.props.message + "</div>\n                    <iron-icon class=\"flash__close\" id=\"close\" icon=\"close\"></iron-icon>\n                </div>\n            </div>\n        ";
@@ -17625,6 +17631,19 @@ var KamiFlash = /** @class */ (function (_super) {
             flash.setAttribute('message', message);
         }
         document.body.appendChild(flash);
+    };
+    KamiFlash.closeAll = function () {
+        var _loop_1 = function (key, flashs) {
+            flashs.forEach(function (flash) {
+                flash.close().then(function () {
+                    KamiFlash.stacked[key] = KamiFlash.initialPosition;
+                });
+            });
+        };
+        for (var _i = 0, _a = Object.entries(KamiFlash.stackedFlash); _i < _a.length; _i++) {
+            var _b = _a[_i], key = _b[0], flashs = _b[1];
+            _loop_1(key, flashs);
+        }
     };
     /**
      * @static

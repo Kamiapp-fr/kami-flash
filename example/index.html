@@ -43,15 +43,19 @@
     </div>
 
     <div>
-        <button id="TOPLEFT">TOPLEFT</button>
-        <button id="TOP">TOP</button>
-        <button id="TOPRIGHT">TOPRIGHT</button>
+        <button class="create" id="TOPLEFT">TOPLEFT</button>
+        <button class="create" id="TOP">TOP</button>
+        <button class="create" id="TOPRIGHT">TOPRIGHT</button>
     </div>
     
     <div>
-        <button id="BOTTOMLEFT">BOTTOMLEFT</button>
-        <button id="BOTTOM">BOTTOM</button>
-        <button id="BOTTOMRIGHT">BOTTOMRIGHT</button>
+        <button class="create" id="BOTTOMLEFT">BOTTOMLEFT</button>
+        <button class="create" id="BOTTOM">BOTTOM</button>
+        <button class="create" id="BOTTOMRIGHT">BOTTOMRIGHT</button>
+    </div>
+
+    <div>
+        <button id="close">CLEAR</button>
     </div>
     
 
@@ -59,12 +63,12 @@
     <script>
         window.onload = function(){
             //declare flash component
-            customElements.define('kami-flash', KamiFlash);
+            customElements.define(KamiFlash.tag, KamiFlash);
 
             KamiFlash.createFlash('kami-flash','INFO','Flash generate this the createFlash() methode','BOTTOM')
 
             //get all button
-            let buttons = document.querySelectorAll('button');
+            let buttons = document.querySelectorAll('.create');
             buttons.forEach((button)=>{
 
                 //add event click listener for each btn
@@ -88,6 +92,9 @@
                 })
             })
 
+            document.body.querySelector('#close').addEventListener('click',()=>{
+                KamiFlash.closeAll();
+            })
         }
     </script>
 </body>

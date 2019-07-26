@@ -36,6 +36,7 @@ declare class KamiFlash extends KamiComponent {
      * @property {IPosition} stackedFlash - all stacked flash.
      */
     static stackedFlash: IPosition;
+    flashInLoad: Boolean;
     /**
      * @property {IAnimation} bottomAnimation - animations for bottom element
      */
@@ -79,7 +80,7 @@ declare class KamiFlash extends KamiComponent {
      * Here it use to add an enter animation
      */
     connectedCallback(): void;
-    close(): void;
+    close(): Promise<KamiFlash>;
     renderHtml(): string;
     renderStyle(): string;
     /**
@@ -91,5 +92,6 @@ declare class KamiFlash extends KamiComponent {
      * @param position {String} - flash position
      */
     static createFlash(tagName: string | undefined, type: string, message: string, position: string, stack?: boolean): void;
+    static closeAll(): void;
 }
 export default KamiFlash;

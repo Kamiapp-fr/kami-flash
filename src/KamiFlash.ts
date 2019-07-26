@@ -64,13 +64,15 @@ class KamiFlash extends KamiComponent {
      * @property {IPosition} stackedFlash - all stacked flash.
      */
     static stackedFlash: IPosition = {
-        BOTTOM: [],
-        BOTTOMLEFT: [],
-        BOTTOMRIGHT: [],
-        TOP: [],
-        TOPLEFT: [],
-        TOPRIGHT: []
+        BOTTOM: [] as Array<KamiFlash>,
+        BOTTOMLEFT: [] as Array<KamiFlash>,
+        BOTTOMRIGHT: [] as Array<KamiFlash>,
+        TOP: [] as Array<KamiFlash>,
+        TOPLEFT: [] as Array<KamiFlash>,
+        TOPRIGHT: [] as Array<KamiFlash>
     };
+
+    public flashInLoad: Boolean = true;
 
     /**
      * @property {IAnimation} bottomAnimation - animations for bottom element
@@ -159,6 +161,7 @@ class KamiFlash extends KamiComponent {
     }
 
     public setProperties(): void {
+        this.flashInLoad = true;
         let type: any = this.getAttribute('type') || 'OK';
         let position: string = this.getAttribute('position') || 'BOTTOM';
 
@@ -170,9 +173,7 @@ class KamiFlash extends KamiComponent {
         });
     }
 
-    public initEventListener(): void {
-        this.closeBtn.addEventListener('click', this.close.bind(this));
-    }
+    public initEventListener(): void {}
 
     /**
      * This method is call when the compenent it create.
@@ -209,37 +210,42 @@ class KamiFlash extends KamiComponent {
                     ] as Keyframe[],
                     this.animationOptions
                 ).onfinish = () => {
+                    this.flashInLoad = false;
                     this.closeBtn.style.opacity = '1';
+                    this.closeBtn.addEventListener('click', this.close.bind(this));
                 };
             }, 400);
         }
     }
 
-    public close() {
-        this.flash.animate(
-            this.animations[Position[this.props.position]].out,
-            this.animationOptions
-        ).onfinish = () => {
-            //delete this component.
-            this.remove();
-            if (this.props.stack) {
-                KamiFlash.stackedFlash[this.position].forEach((flash: this) => {
-                    //update other flash only if it sup a the current flash
-                    if (flash.index > this.index) {
-                        //update the stackedPosition property
-                        flash.stackedPosition = flash.stackedPosition - KamiFlash.ofsetPosition;
+    public close(): Promise<KamiFlash> {
+        return new Promise(res => {
+            this.flash.animate(
+                this.animations[Position[this.props.position]].out,
+                this.animationOptions
+            ).onfinish = () => {
+                //delete this component.
+                this.remove();
+                if (this.props.stack) {
+                    KamiFlash.stackedFlash[this.position].forEach((flash: this) => {
+                        //update other flash only if it sup a the current flash
+                        if (flash.index > this.index) {
+                            //update the stackedPosition property}
+                            flash.stackedPosition = flash.stackedPosition - KamiFlash.ofsetPosition;
 
-                        //update the position of all sup stacked flash
-                        this.position.substring(0, 6) == 'BOTTOM'
-                            ? (flash.dom.style.bottom = `${flash.stackedPosition}px`)
-                            : (flash.dom.style.top = `${flash.stackedPosition}px`);
-                    }
-                });
+                            //update the position of all sup stacked flash
+                            this.position.substring(0, 6) == 'BOTTOM'
+                                ? (flash.dom.style.bottom = `${flash.stackedPosition}px`)
+                                : (flash.dom.style.top = `${flash.stackedPosition}px`);
+                        }
+                    });
 
-                //descrease the current static property
-                KamiFlash.stacked[this.position] -= KamiFlash.ofsetPosition;
-            }
-        };
+                    //descrease the current static property
+                    KamiFlash.stacked[this.position] -= KamiFlash.ofsetPosition;
+                    res(this);
+                }
+            };
+        });
     }
 
     public renderHtml(): string {
@@ -373,6 +379,16 @@ class KamiFlash extends KamiComponent {
         }
 
         document.body.appendChild(flash);
+    }
+
+    public static closeAll() {
+        for (const [key, flashs] of Object.entries(KamiFlash.stackedFlash)) {
+            flashs.forEach((flash: KamiFlash) => {
+                flash.close().then(() => {
+                    KamiFlash.stacked[key] = KamiFlash.initialPosition;
+                });
+            });
+        }
     }
 }
 
