@@ -17541,7 +17541,7 @@
         });
         Object.defineProperty(KamiFlash, "observedAttributes", {
             get: function () {
-                return ['type', 'message', 'position', 'stack'];
+                return ['type', 'message', 'position', 'stack', 'time'];
             },
             enumerable: true,
             configurable: true
@@ -17554,7 +17554,8 @@
                 position: position,
                 type: type,
                 message: this.getAttribute('message') || 'Write your message flash here',
-                stack: this.toBoolean(this.getAttribute('stack')) || true
+                stack: this.toBoolean(this.getAttribute('stack')) || true,
+                time: this.getAttribute('time') || null
             });
         };
         /**
@@ -17587,6 +17588,9 @@
                         _this.inLoad = false;
                         _this.closeBtn.style.opacity = '1';
                         _this.closeBtn.addEventListener('click', _this.close.bind(_this));
+                        if (_this.props.time) {
+                            setTimeout(_this.close.bind(_this), _this.props.time);
+                        }
                     };
                 }, 400);
             }
@@ -17634,13 +17638,17 @@
          * @param message {String} - flash message
          * @param position {String} - flash position
          */
-        KamiFlash.createFlash = function (tagName, type, message, position, stack) {
+        KamiFlash.createFlash = function (tagName, type, message, position, stack, time) {
             if (tagName === void 0) { tagName = KamiFlash.tag; }
             if (stack === void 0) { stack = true; }
+            if (time === void 0) { time = null; }
             var flash = document.createElement(tagName);
             flash.setAttribute('type', type);
             flash.setAttribute('position', position);
             flash.setAttribute('stack', stack.toString());
+            if (time) {
+                flash.setAttribute('time', time);
+            }
             if (message !== '') {
                 flash.setAttribute('message', message);
             }
@@ -17653,9 +17661,12 @@
         KamiFlash.closeAll = function () {
             var _loop_1 = function (key, flashs) {
                 flashs.forEach(function (flash) {
-                    flash.close().then(function () {
+                    flash
+                        .close()
+                        .then(function () {
                         KamiFlash.stacked[key] = KamiFlash.initialPosition;
-                    }).catch(function (err) {
+                    })
+                        .catch(function (err) {
                         console.error(err);
                     });
                 });

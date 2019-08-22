@@ -136,7 +136,7 @@ class KamiFlash extends KamiComponent {
     }
 
     public static get observedAttributes() {
-        return ['type', 'message', 'position', 'stack'];
+        return ['type', 'message', 'position', 'stack', 'time'];
     }
 
     constructor() {
@@ -179,7 +179,8 @@ class KamiFlash extends KamiComponent {
             position: position,
             type: type,
             message: this.getAttribute('message') || 'Write your message flash here',
-            stack: this.toBoolean(this.getAttribute('stack')) || true
+            stack: this.toBoolean(this.getAttribute('stack')) || true,
+            time: this.getAttribute('time') || null
         });
     }
 
@@ -221,6 +222,10 @@ class KamiFlash extends KamiComponent {
                     this.inLoad = false;
                     this.closeBtn.style.opacity = '1';
                     this.closeBtn.addEventListener('click', this.close.bind(this));
+
+                    if (this.props.time) {
+                        setTimeout(this.close.bind(this), this.props.time);
+                    }
                 };
             }, 400);
         }
@@ -379,12 +384,17 @@ class KamiFlash extends KamiComponent {
         type: string,
         message: string,
         position: string,
-        stack: boolean = true
+        stack: boolean = true,
+        time: null | string = null
     ) {
         let flash = document.createElement(tagName);
         flash.setAttribute('type', type);
         flash.setAttribute('position', position);
         flash.setAttribute('stack', stack.toString());
+
+        if (time) {
+            flash.setAttribute('time', time);
+        }
 
         if (message !== '') {
             flash.setAttribute('message', message);

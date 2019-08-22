@@ -103,7 +103,7 @@ declare class KamiFlash extends KamiComponent {
      * @param message {String} - flash message
      * @param position {String} - flash position
      */
-    static createFlash(tagName: string | undefined, type: string, message: string, position: string, stack?: boolean): void;
+    static createFlash(tagName: string | undefined, type: string, message: string, position: string, stack?: boolean, time?: null | string): void;
     /**
      * Close all flashs instance.
      * @returns {void}
