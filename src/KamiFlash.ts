@@ -1,20 +1,20 @@
-//polyfill
+// polyfill
 import '@webcomponents/webcomponentsjs/custom-elements-es5-adapter';
 import '@webcomponents/webcomponentsjs/webcomponents-bundle';
 import 'web-animations-js';
 import '@polymer/iron-icon/iron-icon.js';
 import '@polymer/iron-icons/iron-icons.js';
 
-//import lib
+// import lib
 import KamiComponent from 'kami-component';
 import bottomAnimation from './animations/bottomAnimation';
 import topAnimation from './animations/topAnimation';
 
-//import interfaces
+// import interfaces
 import IAnimation from './interfaces/IAnimation';
 import IPosition from './interfaces/IPosition';
 
-//import enum
+// import enum
 import Type from './enum/Type';
 import Color from './enum/Color';
 import Icon from './enum/Icon';
@@ -146,24 +146,24 @@ class KamiFlash extends KamiComponent {
         this.stackedPosition = 0;
         this.inLoad = true;
 
-        //init animation
+        // init animation
         this.bottomAnimation = bottomAnimation;
         this.topAnimation = topAnimation;
 
-        //init all animation with the good position
+        // init all animation with the good position
         this.animations = {};
 
-        //bottom animation
+        // bottom animation
         this.animations[Position['BOTTOM']] = this.bottomAnimation;
         this.animations[Position['BOTTOMLEFT']] = this.bottomAnimation;
         this.animations[Position['BOTTOMRIGHT']] = this.bottomAnimation;
 
-        //top animation
+        // top animation
         this.animations[Position['TOP']] = this.topAnimation;
         this.animations[Position['TOPLEFT']] = this.topAnimation;
         this.animations[Position['TOPRIGHT']] = this.topAnimation;
 
-        //init animation option
+        // init animation option
         this.animationOptions = {
             duration: 500,
             easing: 'ease'
@@ -188,17 +188,17 @@ class KamiFlash extends KamiComponent {
      * Here it use to add an enter animation
      */
     public connectedCallback(): void {
-        //update the position if the flash is stacked
+        // update the position if the flash is stacked
         if (this.toBoolean(this.getAttribute('stack'))) {
-            //update the flash position
+            // update the flash position
             this.props.stacked = KamiFlash.stacked[this.position];
             this.stackedPosition = KamiFlash.stacked[this.position];
             KamiFlash.stacked[this.position] += KamiFlash.ofsetPosition;
 
-            //set the index of the flash into with the stacked flash length
+            // set the index of the flash into with the stacked flash length
             this.index = KamiFlash.stackedFlash[this.position].length;
 
-            //push into the stackedFlash property the flash
+            // push into the stackedFlash property the flash
             KamiFlash.stackedFlash[this.position].push(this);
         } else {
             this.props.stacked = KamiFlash.initialPosition;
@@ -236,23 +236,23 @@ class KamiFlash extends KamiComponent {
                 this.animations[Position[this.props.position]].out,
                 this.animationOptions
             ).onfinish = () => {
-                //delete this component.
+                // delete this component.
                 this.remove();
                 if (this.props.stack) {
                     KamiFlash.stackedFlash[this.position].forEach((flash: this) => {
-                        //update other flash only if it sup a the current flash
+                        // update other flash only if it sup a the current flash
                         if (flash.index > this.index) {
-                            //update the stackedPosition property}
+                            // update the stackedPosition property}
                             flash.stackedPosition = flash.stackedPosition - KamiFlash.ofsetPosition;
 
-                            //update the position of all sup stacked flash
-                            this.position.substring(0, 6) == 'BOTTOM'
+                            // update the position of all sup stacked flash
+                            this.position.substring(0, 6) === 'BOTTOM'
                                 ? (flash.dom.style.bottom = `${flash.stackedPosition}px`)
                                 : (flash.dom.style.top = `${flash.stackedPosition}px`);
                         }
                     });
 
-                    //descrease the current static property
+                    // descrease the current static property
                     KamiFlash.stacked[this.position] -= KamiFlash.ofsetPosition;
                     res(this);
                 }
@@ -386,7 +386,7 @@ class KamiFlash extends KamiComponent {
         flash.setAttribute('position', position);
         flash.setAttribute('stack', stack.toString());
 
-        if (message != '') {
+        if (message !== '') {
             flash.setAttribute('message', message);
         }
 
@@ -400,9 +400,14 @@ class KamiFlash extends KamiComponent {
     public static closeAll() {
         for (const [key, flashs] of Object.entries(KamiFlash.stackedFlash)) {
             flashs.forEach((flash: KamiFlash) => {
-                flash.close().then(() => {
-                    KamiFlash.stacked[key] = KamiFlash.initialPosition;
-                });
+                flash
+                    .close()
+                    .then(() => {
+                        KamiFlash.stacked[key] = KamiFlash.initialPosition;
+                    })
+                    .catch(err => {
+                        console.error(err);
+                    });
             });
         }
     }

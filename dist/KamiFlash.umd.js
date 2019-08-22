@@ -17468,20 +17468,20 @@
             _this.index = 0;
             _this.stackedPosition = 0;
             _this.inLoad = true;
-            //init animation
+            // init animation
             _this.bottomAnimation = bottomAnimation;
             _this.topAnimation = topAnimation;
-            //init all animation with the good position
+            // init all animation with the good position
             _this.animations = {};
-            //bottom animation
+            // bottom animation
             _this.animations[Position$1['BOTTOM']] = _this.bottomAnimation;
             _this.animations[Position$1['BOTTOMLEFT']] = _this.bottomAnimation;
             _this.animations[Position$1['BOTTOMRIGHT']] = _this.bottomAnimation;
-            //top animation
+            // top animation
             _this.animations[Position$1['TOP']] = _this.topAnimation;
             _this.animations[Position$1['TOPLEFT']] = _this.topAnimation;
             _this.animations[Position$1['TOPRIGHT']] = _this.topAnimation;
-            //init animation option
+            // init animation option
             _this.animationOptions = {
                 duration: 500,
                 easing: 'ease'
@@ -17563,15 +17563,15 @@
          */
         KamiFlash.prototype.connectedCallback = function () {
             var _this = this;
-            //update the position if the flash is stacked
+            // update the position if the flash is stacked
             if (this.toBoolean(this.getAttribute('stack'))) {
-                //update the flash position
+                // update the flash position
                 this.props.stacked = KamiFlash.stacked[this.position];
                 this.stackedPosition = KamiFlash.stacked[this.position];
                 KamiFlash.stacked[this.position] += KamiFlash.ofsetPosition;
-                //set the index of the flash into with the stacked flash length
+                // set the index of the flash into with the stacked flash length
                 this.index = KamiFlash.stackedFlash[this.position].length;
-                //push into the stackedFlash property the flash
+                // push into the stackedFlash property the flash
                 KamiFlash.stackedFlash[this.position].push(this);
             }
             else {
@@ -17599,21 +17599,21 @@
             var _this = this;
             return new Promise(function (res) {
                 _this.flash.animate(_this.animations[Position$1[_this.props.position]].out, _this.animationOptions).onfinish = function () {
-                    //delete this component.
+                    // delete this component.
                     _this.remove();
                     if (_this.props.stack) {
                         KamiFlash.stackedFlash[_this.position].forEach(function (flash) {
-                            //update other flash only if it sup a the current flash
+                            // update other flash only if it sup a the current flash
                             if (flash.index > _this.index) {
-                                //update the stackedPosition property}
+                                // update the stackedPosition property}
                                 flash.stackedPosition = flash.stackedPosition - KamiFlash.ofsetPosition;
-                                //update the position of all sup stacked flash
-                                _this.position.substring(0, 6) == 'BOTTOM'
+                                // update the position of all sup stacked flash
+                                _this.position.substring(0, 6) === 'BOTTOM'
                                     ? (flash.dom.style.bottom = flash.stackedPosition + "px")
                                     : (flash.dom.style.top = flash.stackedPosition + "px");
                             }
                         });
-                        //descrease the current static property
+                        // descrease the current static property
                         KamiFlash.stacked[_this.position] -= KamiFlash.ofsetPosition;
                         res(_this);
                     }
@@ -17641,7 +17641,7 @@
             flash.setAttribute('type', type);
             flash.setAttribute('position', position);
             flash.setAttribute('stack', stack.toString());
-            if (message != '') {
+            if (message !== '') {
                 flash.setAttribute('message', message);
             }
             document.body.appendChild(flash);
@@ -17655,6 +17655,8 @@
                 flashs.forEach(function (flash) {
                     flash.close().then(function () {
                         KamiFlash.stacked[key] = KamiFlash.initialPosition;
+                    }).catch(function (err) {
+                        console.error(err);
                     });
                 });
             };
