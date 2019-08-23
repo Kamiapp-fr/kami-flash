@@ -1,7 +1,10 @@
 import KamiComponent from 'kami-component';
 import IKamiProgressBar from '../interfaces/IKamiProgressBar';
+import Type from '../enum/Type';
+import ColorProgressBar from '../enum/ColorProgressBar';
 
 class KamiProgressBar extends KamiComponent {
+    color: string;
     /**
      * @static
      * @property {string} tag - the component tag
@@ -24,17 +27,20 @@ class KamiProgressBar extends KamiComponent {
         return (this.width / this.props.time) * 10;
     }
 
-    constructor({ width, time }: IKamiProgressBar) {
+    constructor({ width, time, type }: IKamiProgressBar) {
         super();
         this.width = width;
         this.props.width = width;
         this.props.time = time;
+        this.props.type = type;
+        this.color = ColorProgressBar[this.props.type];
     }
 
     setProperties() {
         this.props = this.observe({
             width: 0,
-            time: 0
+            time: 0,
+            type: Type.INFO
         } as IKamiProgressBar);
     }
 
@@ -63,9 +69,10 @@ class KamiProgressBar extends KamiComponent {
                 position: absolute;
                 width: ${this.props.width}px;
                 height: 5px;
-                background-color: red;
+                background-color: ${this.color};
                 bottom: 0;
                 left: 0;
+                border-radius: .2857rem;
             }
         `;
     }

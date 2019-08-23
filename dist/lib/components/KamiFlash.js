@@ -132,9 +132,9 @@ var KamiFlash = /** @class */ (function (_super) {
      */
     KamiFlash.prototype.connectedCallback = function () {
         // update the position if the flash is stacked
-        this.toBoolean(this.getAttribute('stack')) ?
-            this.stackFlash() :
-            this.props.stacked = KamiFlash.initialPosition;
+        this.toBoolean(this.getAttribute('stack'))
+            ? this.stackFlash()
+            : (this.props.stacked = KamiFlash.initialPosition);
         if (this.props.time && this.props.progressbar) {
             this.displayProgressBar();
         }
@@ -163,7 +163,8 @@ var KamiFlash = /** @class */ (function (_super) {
     KamiFlash.prototype.displayProgressBar = function () {
         this.progressbar = new KamiProgressBar_1.default({
             width: this.flash.offsetWidth,
-            time: this.props.time
+            time: this.props.time,
+            type: this.props.type
         });
         this.flash.appendChild(this.progressbar);
     };

@@ -801,14 +801,42 @@
       return KamiComponent;
   }(HTMLElement));
 
+  /**
+   * Defini the different flash type.
+   * @enum Type
+   */
+  var Type;
+  (function (Type) {
+      Type["OK"] = "OK";
+      Type["ERROR"] = "ERROR";
+      Type["WARNING"] = "WARNING";
+      Type["INFO"] = "INFO";
+  })(Type || (Type = {}));
+  var Type$1 = Type;
+
+  /**
+   * Determine the progress bar color should be used which each type.
+   * @enum ColorProgressBar
+   */
+  var ColorProgressBar;
+  (function (ColorProgressBar) {
+      ColorProgressBar["OK"] = "#008e72";
+      ColorProgressBar["ERROR"] = "#ff0056";
+      ColorProgressBar["WARNING"] = "#ff3000";
+      ColorProgressBar["INFO"] = "#0081ff";
+  })(ColorProgressBar || (ColorProgressBar = {}));
+  var ColorProgressBar$1 = ColorProgressBar;
+
   var KamiProgressBar = /** @class */ (function (_super) {
       __extends(KamiProgressBar, _super);
       function KamiProgressBar(_a) {
-          var width = _a.width, time = _a.time;
+          var width = _a.width, time = _a.time, type = _a.type;
           var _this = _super.call(this) || this;
           _this.width = width;
           _this.props.width = width;
           _this.props.time = time;
+          _this.props.type = type;
+          _this.color = ColorProgressBar$1[_this.props.type];
           return _this;
       }
       Object.defineProperty(KamiProgressBar, "tag", {
@@ -832,7 +860,8 @@
       KamiProgressBar.prototype.setProperties = function () {
           this.props = this.observe({
               width: 0,
-              time: 0
+              time: 0,
+              type: Type$1.INFO
           });
       };
       KamiProgressBar.prototype.start = function () {
@@ -850,7 +879,7 @@
           return "\n            <div class=\"progressbar\">\n            </div>\n        ";
       };
       KamiProgressBar.prototype.renderStyle = function () {
-          return "\n            .progressbar{\n                position: absolute;\n                width: " + this.props.width + "px;\n                height: 5px;\n                background-color: red;\n                bottom: 0;\n                left: 0;\n            }\n        ";
+          return "\n            .progressbar{\n                position: absolute;\n                width: " + this.props.width + "px;\n                height: 5px;\n                background-color: " + this.color + ";\n                bottom: 0;\n                left: 0;\n                border-radius: .2857rem;\n            }\n        ";
       };
       return KamiProgressBar;
   }(KamiComponent));
@@ -876,19 +905,6 @@
           { opacity: '0', transform: 'translateY(-30px)' }
       ]
   };
-
-  /**
-   * Defini the different flash type.
-   * @enum Type
-   */
-  var Type;
-  (function (Type) {
-      Type["OK"] = "OK";
-      Type["ERROR"] = "ERROR";
-      Type["WARNING"] = "WARNING";
-      Type["INFO"] = "INFO";
-  })(Type || (Type = {}));
-  var Type$1 = Type;
 
   /**
    * Determine which color should be used which each type.
@@ -1038,9 +1054,9 @@
        */
       KamiFlash.prototype.connectedCallback = function () {
           // update the position if the flash is stacked
-          this.toBoolean(this.getAttribute('stack')) ?
-              this.stackFlash() :
-              this.props.stacked = KamiFlash.initialPosition;
+          this.toBoolean(this.getAttribute('stack'))
+              ? this.stackFlash()
+              : (this.props.stacked = KamiFlash.initialPosition);
           if (this.props.time && this.props.progressbar) {
               this.displayProgressBar();
           }
@@ -1069,7 +1085,8 @@
       KamiFlash.prototype.displayProgressBar = function () {
           this.progressbar = new KamiProgressBar({
               width: this.flash.offsetWidth,
-              time: this.props.time
+              time: this.props.time,
+              type: this.props.type
           });
           this.flash.appendChild(this.progressbar);
       };

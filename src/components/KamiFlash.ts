@@ -233,7 +233,8 @@ class KamiFlash extends KamiComponent {
     public displayProgressBar() {
         this.progressbar = new KamiProgressBar({
             width: this.flash.offsetWidth,
-            time: this.props.time
+            time: this.props.time,
+            type: this.props.type as Type
         });
 
         this.flash.appendChild(this.progressbar);

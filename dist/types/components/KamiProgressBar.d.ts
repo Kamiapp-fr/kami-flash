@@ -1,6 +1,7 @@
 import KamiComponent from 'kami-component';
 import IKamiProgressBar from '../interfaces/IKamiProgressBar';
 declare class KamiProgressBar extends KamiComponent {
+    color: string;
     /**
      * @static
      * @property {string} tag - the component tag
@@ -15,7 +16,7 @@ declare class KamiProgressBar extends KamiComponent {
      */
     private width;
     readonly deltaWidth: number;
-    constructor({ width, time }: IKamiProgressBar);
+    constructor({ width, time, type }: IKamiProgressBar);
     setProperties(): void;
     start(): void;
     progress(): void;

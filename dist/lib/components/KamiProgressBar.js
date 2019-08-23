@@ -14,14 +14,18 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var kami_component_1 = require("kami-component");
+var Type_1 = require("../enum/Type");
+var ColorProgressBar_1 = require("../enum/ColorProgressBar");
 var KamiProgressBar = /** @class */ (function (_super) {
     __extends(KamiProgressBar, _super);
     function KamiProgressBar(_a) {
-        var width = _a.width, time = _a.time;
+        var width = _a.width, time = _a.time, type = _a.type;
         var _this = _super.call(this) || this;
         _this.width = width;
         _this.props.width = width;
         _this.props.time = time;
+        _this.props.type = type;
+        _this.color = ColorProgressBar_1.default[_this.props.type];
         return _this;
     }
     Object.defineProperty(KamiProgressBar, "tag", {
@@ -45,7 +49,8 @@ var KamiProgressBar = /** @class */ (function (_super) {
     KamiProgressBar.prototype.setProperties = function () {
         this.props = this.observe({
             width: 0,
-            time: 0
+            time: 0,
+            type: Type_1.default.INFO
         });
     };
     KamiProgressBar.prototype.start = function () {
@@ -63,7 +68,7 @@ var KamiProgressBar = /** @class */ (function (_super) {
         return "\n            <div class=\"progressbar\">\n            </div>\n        ";
     };
     KamiProgressBar.prototype.renderStyle = function () {
-        return "\n            .progressbar{\n                position: absolute;\n                width: " + this.props.width + "px;\n                height: 5px;\n                background-color: red;\n                bottom: 0;\n                left: 0;\n            }\n        ";
+        return "\n            .progressbar{\n                position: absolute;\n                width: " + this.props.width + "px;\n                height: 5px;\n                background-color: " + this.color + ";\n                bottom: 0;\n                left: 0;\n                border-radius: .2857rem;\n            }\n        ";
     };
     return KamiProgressBar;
 }(kami_component_1.default));
