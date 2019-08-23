@@ -13,21 +13,15 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-// polyfill
-require("@webcomponents/webcomponentsjs/custom-elements-es5-adapter");
-require("@webcomponents/webcomponentsjs/webcomponents-bundle");
-require("web-animations-js");
-require("@polymer/iron-icon/iron-icon.js");
-require("@polymer/iron-icons/iron-icons.js");
 // import lib
 var kami_component_1 = require("kami-component");
-var bottomAnimation_1 = require("./animations/bottomAnimation");
-var topAnimation_1 = require("./animations/topAnimation");
+var bottomAnimation_1 = require("../animations/bottomAnimation");
+var topAnimation_1 = require("../animations/topAnimation");
 // import enum
-var Type_1 = require("./enum/Type");
-var Color_1 = require("./enum/Color");
-var Icon_1 = require("./enum/Icon");
-var Position_1 = require("./enum/Position");
+var Type_1 = require("../enum/Type");
+var Color_1 = require("../enum/Color");
+var Icon_1 = require("../enum/Icon");
+var Position_1 = require("../enum/Position");
 /**
  * Create a simple flash message
  * @class KamiFlash

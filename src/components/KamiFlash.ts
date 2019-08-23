@@ -1,24 +1,17 @@
-// polyfill
-import '@webcomponents/webcomponentsjs/custom-elements-es5-adapter';
-import '@webcomponents/webcomponentsjs/webcomponents-bundle';
-import 'web-animations-js';
-import '@polymer/iron-icon/iron-icon.js';
-import '@polymer/iron-icons/iron-icons.js';
-
 // import lib
 import KamiComponent from 'kami-component';
-import bottomAnimation from './animations/bottomAnimation';
-import topAnimation from './animations/topAnimation';
+import bottomAnimation from '../animations/bottomAnimation';
+import topAnimation from '../animations/topAnimation';
 
 // import interfaces
-import IAnimation from './interfaces/IAnimation';
-import IPosition from './interfaces/IPosition';
+import IAnimation from '../interfaces/IAnimation';
+import IPosition from '../interfaces/IPosition';
 
 // import enum
-import Type from './enum/Type';
-import Color from './enum/Color';
-import Icon from './enum/Icon';
-import Position from './enum/Position';
+import Type from '../enum/Type';
+import Color from '../enum/Color';
+import Icon from '../enum/Icon';
+import Position from '../enum/Position';
 
 /**
  * Create a simple flash message
@@ -110,14 +103,14 @@ class KamiFlash extends KamiComponent {
     /**
      * @property {HTMLElement | null} close - the close btn
      */
-    private get closeBtn() {
+    private get closeBtn(): HTMLElement {
         return this.wrapper.querySelector('#close') as HTMLElement;
     }
 
     /**
      * @property {HTMLElement | null} flash - the dom structure
      */
-    private get flash() {
+    private get flash(): HTMLElement {
         return this.wrapper.querySelector('.flash') as HTMLElement;
     }
 
