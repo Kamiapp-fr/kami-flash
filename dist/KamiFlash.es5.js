@@ -795,6 +795,60 @@ var KamiComponent = /** @class */ (function (_super) {
     return KamiComponent;
 }(HTMLElement));
 
+var KamiProgressBar = /** @class */ (function (_super) {
+    __extends(KamiProgressBar, _super);
+    function KamiProgressBar(_a) {
+        var width = _a.width, time = _a.time;
+        var _this = _super.call(this) || this;
+        _this.width = width;
+        _this.props.width = width;
+        _this.props.time = time;
+        return _this;
+    }
+    Object.defineProperty(KamiProgressBar, "tag", {
+        /**
+         * @static
+         * @property {string} tag - the component tag
+         */
+        get: function () {
+            return 'kami-progressbar';
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(KamiProgressBar.prototype, "deltaWidth", {
+        get: function () {
+            return (this.width / this.props.time) * 10;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    KamiProgressBar.prototype.setProperties = function () {
+        this.props = this.observe({
+            width: 0,
+            time: 0
+        });
+    };
+    KamiProgressBar.prototype.start = function () {
+        this.interval = setInterval(this.progress.bind(this), 10);
+    };
+    KamiProgressBar.prototype.progress = function () {
+        if (this.props.width <= 0) {
+            clearInterval(this.interval);
+        }
+        else {
+            this.props.width = this.props.width - this.deltaWidth;
+        }
+    };
+    KamiProgressBar.prototype.renderHtml = function () {
+        return "\n            <div class=\"progressbar\">\n            </div>\n        ";
+    };
+    KamiProgressBar.prototype.renderStyle = function () {
+        return "\n            .progressbar{\n                position: absolute;\n                width: " + this.props.width + "px;\n                height: 5px;\n                background-color: red;\n                bottom: 0;\n                left: 0;\n            }\n        ";
+    };
+    return KamiProgressBar;
+}(KamiComponent));
+
 var bottomAnimation = {
     enter: [
         { opacity: '0', transform: 'translateY(20px)' },
@@ -954,7 +1008,7 @@ var KamiFlash = /** @class */ (function (_super) {
     });
     Object.defineProperty(KamiFlash, "observedAttributes", {
         get: function () {
-            return ['type', 'message', 'position', 'stack', 'time'];
+            return ['type', 'message', 'position', 'stack', 'time', 'progressbar'];
         },
         enumerable: true,
         configurable: true
@@ -968,7 +1022,8 @@ var KamiFlash = /** @class */ (function (_super) {
             type: type,
             message: this.getAttribute('message') || 'Write your message flash here',
             stack: this.toBoolean(this.getAttribute('stack')) || true,
-            time: this.getAttribute('time') || null
+            time: this.getAttribute('time') || null,
+            progressbar: this.hasAttribute('progressbar') || false
         });
     };
     /**
@@ -976,37 +1031,41 @@ var KamiFlash = /** @class */ (function (_super) {
      * Here it use to add an enter animation
      */
     KamiFlash.prototype.connectedCallback = function () {
-        var _this = this;
         // update the position if the flash is stacked
-        if (this.toBoolean(this.getAttribute('stack'))) {
-            // update the flash position
-            this.props.stacked = KamiFlash.stacked[this.position];
-            this.stackedPosition = KamiFlash.stacked[this.position];
-            KamiFlash.stacked[this.position] += KamiFlash.ofsetPosition;
-            // set the index of the flash into with the stacked flash length
-            this.index = KamiFlash.stackedFlash[this.position].length;
-            // push into the stackedFlash property the flash
-            KamiFlash.stackedFlash[this.position].push(this);
-        }
-        else {
+        this.toBoolean(this.getAttribute('stack')) ?
+            this.stackFlash() :
             this.props.stacked = KamiFlash.initialPosition;
+        if (this.props.time && this.props.progressbar) {
+            this.displayProgressBar();
         }
-        if (this.flash && this.closeBtn) {
-            this.flash.animate(this.animations[Position$1[this.props.position]].enter, this.animationOptions);
-            setTimeout(function () {
-                _this.closeBtn.animate([
-                    { opacity: '0', transform: 'translateX(20px) rotateZ(45deg)' },
-                    { opacity: '1', transform: 'translateX(0px) rotateZ(0deg)' }
-                ], _this.animationOptions).onfinish = function () {
-                    _this.inLoad = false;
-                    _this.closeBtn.style.opacity = '1';
-                    _this.closeBtn.addEventListener('click', _this.close.bind(_this));
-                    if (_this.props.time) {
-                        setTimeout(_this.close.bind(_this), _this.props.time);
-                    }
-                };
-            }, 400);
+        this.display();
+    };
+    KamiFlash.prototype.display = function () {
+        var _this = this;
+        this.flash.animate(this.animations[Position$1[this.props.position]].enter, this.animationOptions);
+        if (this.props.time) {
+            setTimeout(this.close.bind(this), this.props.time);
+            if (this.props.progressbar) {
+                this.progressbar.start();
+            }
         }
+        setTimeout(function () {
+            _this.closeBtn.animate([
+                { opacity: '0', transform: 'translateX(20px) rotateZ(45deg)' },
+                { opacity: '1', transform: 'translateX(0px) rotateZ(0deg)' }
+            ], _this.animationOptions).onfinish = function () {
+                _this.inLoad = false;
+                _this.closeBtn.style.opacity = '1';
+                _this.closeBtn.addEventListener('click', _this.close.bind(_this));
+            };
+        }, 400);
+    };
+    KamiFlash.prototype.displayProgressBar = function () {
+        this.progressbar = new KamiProgressBar({
+            width: this.flash.offsetWidth,
+            time: this.props.time
+        });
+        this.flash.appendChild(this.progressbar);
     };
     /**
      * Close the flash instance.
@@ -1037,6 +1096,15 @@ var KamiFlash = /** @class */ (function (_super) {
             };
         });
     };
+    KamiFlash.prototype.stackFlash = function () {
+        this.props.stacked = KamiFlash.stacked[this.position];
+        this.stackedPosition = KamiFlash.stacked[this.position];
+        KamiFlash.stacked[this.position] += KamiFlash.ofsetPosition;
+        // set the index of the flash into with the stacked flash length
+        this.index = KamiFlash.stackedFlash[this.position].length;
+        // push into the stackedFlash property the flash
+        KamiFlash.stackedFlash[this.position].push(this);
+    };
     KamiFlash.prototype.renderHtml = function () {
         return "\n            <div class=\"flash " + Position$1[this.props.position] + "\">\n                <div class=\"flash__message flash__message--" + Type$1[this.props.type] + " shadow__bottom--30px\">\n                    <iron-icon icon=\"" + Icon$1[this.props.type] + "\"></iron-icon>\n                    <div class=\"flash__text\">" + this.props.message + "</div>\n                    <iron-icon class=\"flash__close\" id=\"close\" icon=\"close\"></iron-icon>\n                </div>\n            </div>\n        ";
     };
@@ -1051,7 +1119,7 @@ var KamiFlash = /** @class */ (function (_super) {
      * @param message {String} - flash message
      * @param position {String} - flash position
      */
-    KamiFlash.createFlash = function (tagName, type, message, position, stack, time) {
+    KamiFlash.createFlash = function (tagName, type, message, position, stack, time, progressbar) {
         if (tagName === void 0) { tagName = KamiFlash.tag; }
         if (stack === void 0) { stack = true; }
         if (time === void 0) { time = null; }
@@ -1061,6 +1129,9 @@ var KamiFlash = /** @class */ (function (_super) {
         flash.setAttribute('stack', stack.toString());
         if (time) {
             flash.setAttribute('time', time);
+        }
+        if (progressbar) {
+            flash.setAttribute('progressbar', 'true');
         }
         if (message !== '') {
             flash.setAttribute('message', message);
@@ -1124,34 +1195,6 @@ var KamiFlash = /** @class */ (function (_super) {
         TOPRIGHT: []
     };
     return KamiFlash;
-}(KamiComponent));
-
-var KamiProgressBar = /** @class */ (function (_super) {
-    __extends(KamiProgressBar, _super);
-    function KamiProgressBar() {
-        return _super.call(this) || this;
-    }
-    Object.defineProperty(KamiProgressBar, "tag", {
-        /**
-         * @static
-         * @property {string} tag - the component tag
-         */
-        get: function () {
-            return 'kami-progressbar';
-        },
-        enumerable: true,
-        configurable: true
-    });
-    KamiProgressBar.prototype.setProperties = function () {
-        this.props = this.observe({});
-    };
-    KamiProgressBar.prototype.renderHtml = function () {
-        return "\n            <div class=\"progressbar\">\n            </div>\n        ";
-    };
-    KamiProgressBar.prototype.renderStyle = function () {
-        return "\n\n        ";
-    };
-    return KamiProgressBar;
 }(KamiComponent));
 
 // polyfill

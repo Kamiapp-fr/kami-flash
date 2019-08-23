@@ -1,4 +1,5 @@
 import KamiComponent from 'kami-component';
+import IKamiProgressBar from '../interfaces/IKamiProgressBar';
 
 class KamiProgressBar extends KamiComponent {
     /**
@@ -9,12 +10,44 @@ class KamiProgressBar extends KamiComponent {
         return 'kami-progressbar';
     }
 
-    constructor() {
+    /**
+     * TODO doc and type
+     */
+    private interval: any;
+
+    /**
+     * TODO doc
+     */
+    private width: number;
+
+    get deltaWidth() {
+        return (this.width / this.props.time) * 10;
+    }
+
+    constructor({ width, time }: IKamiProgressBar) {
         super();
+        this.width = width;
+        this.props.width = width;
+        this.props.time = time;
     }
 
     setProperties() {
-        this.props = this.observe({});
+        this.props = this.observe({
+            width: 0,
+            time: 0
+        } as IKamiProgressBar);
+    }
+
+    start() {
+        this.interval = setInterval(this.progress.bind(this), 10);
+    }
+
+    progress() {
+        if (this.props.width <= 0) {
+            clearInterval(this.interval);
+        } else {
+            this.props.width = this.props.width - this.deltaWidth;
+        }
     }
 
     renderHtml() {
@@ -26,7 +59,14 @@ class KamiProgressBar extends KamiComponent {
 
     renderStyle() {
         return `
-
+            .progressbar{
+                position: absolute;
+                width: ${this.props.width}px;
+                height: 5px;
+                background-color: red;
+                bottom: 0;
+                left: 0;
+            }
         `;
     }
 }

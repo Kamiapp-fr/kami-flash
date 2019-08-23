@@ -52,6 +52,10 @@ declare class KamiFlash extends KamiComponent {
      */
     private animationOptions;
     /**
+     * TODO doc and type
+     */
+    private progressbar;
+    /**
      * @property {number} index - index of the flash
      */
     index: number;
@@ -83,11 +87,14 @@ declare class KamiFlash extends KamiComponent {
      * Here it use to add an enter animation
      */
     connectedCallback(): void;
+    display(): void;
+    displayProgressBar(): void;
     /**
      * Close the flash instance.
      * @returns {Promise<KamiFlash>} the flash instance close
      */
     close(): Promise<KamiFlash>;
+    stackFlash(): void;
     renderHtml(): string;
     renderStyle(): string;
     /**
@@ -98,7 +105,7 @@ declare class KamiFlash extends KamiComponent {
      * @param message {String} - flash message
      * @param position {String} - flash position
      */
-    static createFlash(tagName: string | undefined, type: string, message: string, position: string, stack?: boolean, time?: null | string): void;
+    static createFlash(tagName: string | undefined, type: string, message: string, position: string, stack: boolean | undefined, time: string | null | undefined, progressbar: null | boolean): void;
     /**
      * Close all flashs instance.
      * @returns {void}

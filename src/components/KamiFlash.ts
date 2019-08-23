@@ -1,5 +1,6 @@
 // import lib
 import KamiComponent from 'kami-component';
+import KamiProgressBar from './KamiProgressBar';
 import bottomAnimation from '../animations/bottomAnimation';
 import topAnimation from '../animations/topAnimation';
 
@@ -91,6 +92,11 @@ class KamiFlash extends KamiComponent {
     private animationOptions: KeyframeAnimationOptions;
 
     /**
+     * TODO doc and type
+     */
+    private progressbar: any;
+
+    /**
      * @property {number} index - index of the flash
      */
     public index: number;
@@ -129,7 +135,7 @@ class KamiFlash extends KamiComponent {
     }
 
     public static get observedAttributes() {
-        return ['type', 'message', 'position', 'stack', 'time'];
+        return ['type', 'message', 'position', 'stack', 'time', 'progressbar'];
     }
 
     constructor() {
@@ -173,7 +179,8 @@ class KamiFlash extends KamiComponent {
             type: type,
             message: this.getAttribute('message') || 'Write your message flash here',
             stack: this.toBoolean(this.getAttribute('stack')) || true,
-            time: this.getAttribute('time') || null
+            time: this.getAttribute('time') || null,
+            progressbar: this.hasAttribute('progressbar') || false
         });
     }
 
@@ -183,45 +190,53 @@ class KamiFlash extends KamiComponent {
      */
     public connectedCallback(): void {
         // update the position if the flash is stacked
-        if (this.toBoolean(this.getAttribute('stack'))) {
-            // update the flash position
-            this.props.stacked = KamiFlash.stacked[this.position];
-            this.stackedPosition = KamiFlash.stacked[this.position];
-            KamiFlash.stacked[this.position] += KamiFlash.ofsetPosition;
+        this.toBoolean(this.getAttribute('stack'))
+            ? this.stackFlash()
+            : (this.props.stacked = KamiFlash.initialPosition);
 
-            // set the index of the flash into with the stacked flash length
-            this.index = KamiFlash.stackedFlash[this.position].length;
-
-            // push into the stackedFlash property the flash
-            KamiFlash.stackedFlash[this.position].push(this);
-        } else {
-            this.props.stacked = KamiFlash.initialPosition;
+        if (this.props.time && this.props.progressbar) {
+            this.displayProgressBar();
         }
 
-        if (this.flash && this.closeBtn) {
-            this.flash.animate(
-                this.animations[Position[this.props.position]].enter,
+        this.display();
+    }
+
+    public display() {
+        this.flash.animate(
+            this.animations[Position[this.props.position]].enter,
+            this.animationOptions
+        );
+
+        if (this.props.time) {
+            setTimeout(this.close.bind(this), this.props.time);
+
+            if (this.props.progressbar) {
+                this.progressbar.start();
+            }
+        }
+
+        setTimeout(() => {
+            this.closeBtn.animate(
+                [
+                    { opacity: '0', transform: 'translateX(20px) rotateZ(45deg)' },
+                    { opacity: '1', transform: 'translateX(0px) rotateZ(0deg)' }
+                ] as Keyframe[],
                 this.animationOptions
-            );
+            ).onfinish = () => {
+                this.inLoad = false;
+                this.closeBtn.style.opacity = '1';
+                this.closeBtn.addEventListener('click', this.close.bind(this));
+            };
+        }, 400);
+    }
 
-            setTimeout(() => {
-                this.closeBtn.animate(
-                    [
-                        { opacity: '0', transform: 'translateX(20px) rotateZ(45deg)' },
-                        { opacity: '1', transform: 'translateX(0px) rotateZ(0deg)' }
-                    ] as Keyframe[],
-                    this.animationOptions
-                ).onfinish = () => {
-                    this.inLoad = false;
-                    this.closeBtn.style.opacity = '1';
-                    this.closeBtn.addEventListener('click', this.close.bind(this));
+    public displayProgressBar() {
+        this.progressbar = new KamiProgressBar({
+            width: this.flash.offsetWidth,
+            time: this.props.time
+        });
 
-                    if (this.props.time) {
-                        setTimeout(this.close.bind(this), this.props.time);
-                    }
-                };
-            }, 400);
-        }
+        this.flash.appendChild(this.progressbar);
     }
 
     /**
@@ -256,6 +271,18 @@ class KamiFlash extends KamiComponent {
                 }
             };
         });
+    }
+
+    public stackFlash() {
+        this.props.stacked = KamiFlash.stacked[this.position];
+        this.stackedPosition = KamiFlash.stacked[this.position];
+        KamiFlash.stacked[this.position] += KamiFlash.ofsetPosition;
+
+        // set the index of the flash into with the stacked flash length
+        this.index = KamiFlash.stackedFlash[this.position].length;
+
+        // push into the stackedFlash property the flash
+        KamiFlash.stackedFlash[this.position].push(this);
     }
 
     public renderHtml(): string {
@@ -378,7 +405,8 @@ class KamiFlash extends KamiComponent {
         message: string,
         position: string,
         stack: boolean = true,
-        time: null | string = null
+        time: null | string = null,
+        progressbar: null | boolean
     ) {
         let flash = document.createElement(tagName);
         flash.setAttribute('type', type);
@@ -387,6 +415,10 @@ class KamiFlash extends KamiComponent {
 
         if (time) {
             flash.setAttribute('time', time);
+        }
+
+        if (progressbar) {
+            flash.setAttribute('progressbar', 'true');
         }
 
         if (message !== '') {
