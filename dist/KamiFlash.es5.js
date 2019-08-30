@@ -951,6 +951,7 @@ var KamiFlash = /** @class */ (function (_super) {
         _this.index = 0;
         _this.stackedPosition = 0;
         _this.inLoad = true;
+        _this.closed = false;
         // init animation
         _this.bottomAnimation = bottomAnimation;
         _this.topAnimation = topAnimation;
@@ -1094,7 +1095,7 @@ var KamiFlash = /** @class */ (function (_super) {
             _this.flash.animate(_this.animations[Position$1[_this.props.position]].out, _this.animationOptions).onfinish = function () {
                 // delete this component.
                 _this.remove();
-                if (_this.props.stack) {
+                if (_this.props.stack && !_this.closed) {
                     KamiFlash.stackedFlash[_this.position].forEach(function (flash) {
                         // update other flash only if it sup a the current flash
                         if (flash.index > _this.index) {
@@ -1108,6 +1109,8 @@ var KamiFlash = /** @class */ (function (_super) {
                     });
                     // descrease the current static property
                     KamiFlash.stacked[_this.position] -= KamiFlash.ofsetPosition;
+                    // fix for timed flash 
+                    _this.closed = true;
                     res(_this);
                 }
             };

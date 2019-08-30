@@ -1,4 +1,4 @@
-import Type from "../enum/Type";
+import Type from '../enum/Type';
 interface IKamiProgressBar {
     width: number;
     time: number;

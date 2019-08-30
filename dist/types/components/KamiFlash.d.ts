@@ -56,6 +56,10 @@ declare class KamiFlash extends KamiComponent {
      */
     private progressbar;
     /**
+     * TODO doc and type
+     */
+    private closed;
+    /**
      * @property {number} index - index of the flash
      */
     index: number;

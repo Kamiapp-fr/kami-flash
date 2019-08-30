@@ -97,6 +97,11 @@ class KamiFlash extends KamiComponent {
     private progressbar: any;
 
     /**
+     * TODO doc and type
+     */
+    private closed: boolean;
+
+    /**
      * @property {number} index - index of the flash
      */
     public index: number;
@@ -144,6 +149,7 @@ class KamiFlash extends KamiComponent {
         this.index = 0;
         this.stackedPosition = 0;
         this.inLoad = true;
+        this.closed = false;
 
         // init animation
         this.bottomAnimation = bottomAnimation;
@@ -252,7 +258,7 @@ class KamiFlash extends KamiComponent {
             ).onfinish = () => {
                 // delete this component.
                 this.remove();
-                if (this.props.stack) {
+                if (this.props.stack && !this.closed) {
                     KamiFlash.stackedFlash[this.position].forEach((flash: this) => {
                         // update other flash only if it sup a the current flash
                         if (flash.index > this.index) {
@@ -268,6 +274,9 @@ class KamiFlash extends KamiComponent {
 
                     // descrease the current static property
                     KamiFlash.stacked[this.position] -= KamiFlash.ofsetPosition;
+
+                    // fix for timed flash
+                    this.closed = true;
                     res(this);
                 }
             };
