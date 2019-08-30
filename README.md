@@ -73,6 +73,8 @@ See the *props section* to customize your flash component.
 | message       | String   | The flash message           | false    | 'Write your message flash here'|
 | position      | Position | The flash position          | false    | BOTTOM                         |
 | stack         | Boolean  | Stack or not all flash      | false    | true                           |
+| time          | Number   | Time to wait before remove the flash | false | null                     |
+| progressbar   | Boolean  | Display a progress bar if time is set| false | false                    |
 
 ## Contribute
 

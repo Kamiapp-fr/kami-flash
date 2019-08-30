@@ -16,6 +16,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var kami_component_1 = require("kami-component");
 var Type_1 = require("../enum/Type");
 var ColorProgressBar_1 = require("../enum/ColorProgressBar");
+/**
+ * Create a progress bar for the kami flash component.
+ * @class KamiProgressBar
+ * @extends KamiComponent
+ */
 var KamiProgressBar = /** @class */ (function (_super) {
     __extends(KamiProgressBar, _super);
     function KamiProgressBar(_a) {
@@ -40,6 +45,10 @@ var KamiProgressBar = /** @class */ (function (_super) {
         configurable: true
     });
     Object.defineProperty(KamiProgressBar.prototype, "deltaWidth", {
+        /**
+         * Delta width by the current time.
+         * @type {number}
+         */
         get: function () {
             return (this.width / this.props.time) * 10;
         },
@@ -53,16 +62,21 @@ var KamiProgressBar = /** @class */ (function (_super) {
             type: Type_1.default.INFO
         });
     };
+    /**
+     * Start the progress bar reduce.
+     * @returns {void}
+     */
     KamiProgressBar.prototype.start = function () {
-        this.interval = setInterval(this.progress.bind(this), 10);
+        this.interval = window.setInterval(this.progress.bind(this), 10);
     };
+    /**
+     * Reduce the progress bar with the current delta width.
+     * @returns {void}
+     */
     KamiProgressBar.prototype.progress = function () {
-        if (this.props.width <= 0) {
-            clearInterval(this.interval);
-        }
-        else {
+        this.props.width <= 0 ?
+            clearInterval(this.interval) :
             this.props.width = this.props.width - this.deltaWidth;
-        }
     };
     KamiProgressBar.prototype.renderHtml = function () {
         return "\n            <div class=\"progressbar\">\n            </div>\n        ";

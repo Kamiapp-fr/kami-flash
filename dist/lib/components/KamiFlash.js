@@ -141,6 +141,10 @@ var KamiFlash = /** @class */ (function (_super) {
         }
         this.display();
     };
+    /**
+     * Display the flash component.
+     * @returns {void}
+     */
     KamiFlash.prototype.display = function () {
         var _this = this;
         this.flash.animate(this.animations[Position_1.default[this.props.position]].enter, this.animationOptions);
@@ -161,6 +165,10 @@ var KamiFlash = /** @class */ (function (_super) {
             };
         }, 400);
     };
+    /**
+     * Display the progress bar.
+     * @returns {void}
+     */
     KamiFlash.prototype.displayProgressBar = function () {
         this.progressbar = new KamiProgressBar_1.default({
             width: this.flash.offsetWidth,
@@ -177,29 +185,20 @@ var KamiFlash = /** @class */ (function (_super) {
         var _this = this;
         return new Promise(function (res) {
             _this.flash.animate(_this.animations[Position_1.default[_this.props.position]].out, _this.animationOptions).onfinish = function () {
-                // delete this component.
                 _this.remove();
                 if (_this.props.stack && !_this.closed) {
-                    KamiFlash.stackedFlash[_this.position].forEach(function (flash) {
-                        // update other flash only if it sup a the current flash
-                        if (flash.index > _this.index) {
-                            // update the stackedPosition property}
-                            flash.stackedPosition = flash.stackedPosition - KamiFlash.ofsetPosition;
-                            // update the position of all sup stacked flash
-                            _this.position.substring(0, 6) === 'BOTTOM'
-                                ? (flash.dom.style.bottom = flash.stackedPosition + "px")
-                                : (flash.dom.style.top = flash.stackedPosition + "px");
-                        }
-                    });
-                    // descrease the current static property
-                    KamiFlash.stacked[_this.position] -= KamiFlash.ofsetPosition;
-                    // fix for timed flash 
-                    _this.closed = true;
-                    res(_this);
+                    _this.unStackFlash();
                 }
+                res(_this);
             };
         });
     };
+    /**
+     * Store the current flash into the static flashs array.
+     * Also update the stack delta position.
+     * This methode is call when you set the stack props at true.
+     * @returns {void}
+     */
     KamiFlash.prototype.stackFlash = function () {
         this.props.stacked = KamiFlash.stacked[this.position];
         this.stackedPosition = KamiFlash.stacked[this.position];
@@ -208,6 +207,30 @@ var KamiFlash = /** @class */ (function (_super) {
         this.index = KamiFlash.stackedFlash[this.position].length;
         // push into the stackedFlash property the flash
         KamiFlash.stackedFlash[this.position].push(this);
+    };
+    /**
+     * Remove the flash from the stacked array.
+     * Also update the stack delta position.
+     * This methode is call when you set the stack props at true.
+     * @returns {void}
+     */
+    KamiFlash.prototype.unStackFlash = function () {
+        var _this = this;
+        KamiFlash.stackedFlash[this.position].forEach(function (flash) {
+            // update other flash only if it sup a the current flash
+            if (flash.index > _this.index) {
+                // update the stackedPosition property}
+                flash.stackedPosition = flash.stackedPosition - KamiFlash.ofsetPosition;
+                // update the position of all sup stacked flash
+                _this.position.substring(0, 6) === 'BOTTOM'
+                    ? (flash.dom.style.bottom = flash.stackedPosition + "px")
+                    : (flash.dom.style.top = flash.stackedPosition + "px");
+            }
+        });
+        // descrease the current static property
+        KamiFlash.stacked[this.position] -= KamiFlash.ofsetPosition;
+        // fix for timed flash
+        this.closed = true;
     };
     KamiFlash.prototype.renderHtml = function () {
         return "\n            <div class=\"flash " + Position_1.default[this.props.position] + "\">\n                <div class=\"flash__message flash__message--" + Type_1.default[this.props.type] + " shadow__bottom--30px\">\n                    <iron-icon icon=\"" + Icon_1.default[this.props.type] + "\"></iron-icon>\n                    <div class=\"flash__text\">" + this.props.message + "</div>\n                    <iron-icon class=\"flash__close\" id=\"close\" icon=\"close\"></iron-icon>\n                </div>\n            </div>\n        ";
@@ -222,6 +245,7 @@ var KamiFlash = /** @class */ (function (_super) {
      * @param type {String} - flash type
      * @param message {String} - flash message
      * @param position {String} - flash position
+     * @returns {void}
      */
     KamiFlash.createFlash = function (tagName, type, message, position, stack, time, progressbar) {
         if (tagName === void 0) { tagName = KamiFlash.tag; }

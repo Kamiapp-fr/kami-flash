@@ -3,8 +3,12 @@ import IKamiProgressBar from '../interfaces/IKamiProgressBar';
 import Type from '../enum/Type';
 import ColorProgressBar from '../enum/ColorProgressBar';
 
+/**
+ * Create a progress bar for the kami flash component.
+ * @class KamiProgressBar
+ * @extends KamiComponent
+ */
 class KamiProgressBar extends KamiComponent {
-    color: string;
     /**
      * @static
      * @property {string} tag - the component tag
@@ -14,15 +18,24 @@ class KamiProgressBar extends KamiComponent {
     }
 
     /**
-     * TODO doc and type
+     * @property {string} color - progress bar color
      */
-    private interval: any;
+    private color: string;
 
     /**
-     * TODO doc
+     * @property {number} interval - setInterval id
+     */
+    private interval: number | undefined;
+
+    /**
+     * @property {number} width - progress bar width
      */
     private width: number;
 
+    /**
+     * Delta width by the current time.
+     * @type {number}
+     */
     get deltaWidth() {
         return (this.width / this.props.time) * 10;
     }
@@ -36,7 +49,7 @@ class KamiProgressBar extends KamiComponent {
         this.color = ColorProgressBar[this.props.type];
     }
 
-    setProperties() {
+    setProperties(): void {
         this.props = this.observe({
             width: 0,
             time: 0,
@@ -44,26 +57,32 @@ class KamiProgressBar extends KamiComponent {
         } as IKamiProgressBar);
     }
 
-    start() {
-        this.interval = setInterval(this.progress.bind(this), 10);
+    /**
+     * Start the progress bar reduce.
+     * @returns {void}
+     */
+    start(): void {
+        this.interval = window.setInterval(this.progress.bind(this), 10);
     }
 
-    progress() {
-        if (this.props.width <= 0) {
-            clearInterval(this.interval);
-        } else {
-            this.props.width = this.props.width - this.deltaWidth;
-        }
+    /**
+     * Reduce the progress bar with the current delta width.
+     * @returns {void}
+     */
+    progress(): void {
+        this.props.width <= 0
+            ? clearInterval(this.interval)
+            : (this.props.width = this.props.width - this.deltaWidth);
     }
 
-    renderHtml() {
+    renderHtml(): string {
         return `
             <div class="progressbar">
             </div>
         `;
     }
 
-    renderStyle() {
+    renderStyle(): string {
         return `
             .progressbar{
                 position: absolute;
