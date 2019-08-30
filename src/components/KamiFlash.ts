@@ -1,24 +1,18 @@
-// polyfill
-import '@webcomponents/webcomponentsjs/custom-elements-es5-adapter';
-import '@webcomponents/webcomponentsjs/webcomponents-bundle';
-import 'web-animations-js';
-import '@polymer/iron-icon/iron-icon.js';
-import '@polymer/iron-icons/iron-icons.js';
-
 // import lib
 import KamiComponent from 'kami-component';
-import bottomAnimation from './animations/bottomAnimation';
-import topAnimation from './animations/topAnimation';
+import KamiProgressBar from './KamiProgressBar';
+import bottomAnimation from '../animations/bottomAnimation';
+import topAnimation from '../animations/topAnimation';
 
 // import interfaces
-import IAnimation from './interfaces/IAnimation';
-import IPosition from './interfaces/IPosition';
+import IAnimation from '../interfaces/IAnimation';
+import IPosition from '../interfaces/IPosition';
 
 // import enum
-import Type from './enum/Type';
-import Color from './enum/Color';
-import Icon from './enum/Icon';
-import Position from './enum/Position';
+import Type from '../enum/Type';
+import Color from '../enum/Color';
+import Icon from '../enum/Icon';
+import Position from '../enum/Position';
 
 /**
  * Create a simple flash message
@@ -98,6 +92,16 @@ class KamiFlash extends KamiComponent {
     private animationOptions: KeyframeAnimationOptions;
 
     /**
+     * @property {KamiProgressBar | undefined } progressbar - a progress bar component
+     */
+    private progressbar: KamiProgressBar | undefined;
+
+    /**
+     * @property {boolean} closed - status of the flash
+     */
+    private closed: boolean;
+
+    /**
      * @property {number} index - index of the flash
      */
     public index: number;
@@ -110,14 +114,14 @@ class KamiFlash extends KamiComponent {
     /**
      * @property {HTMLElement | null} close - the close btn
      */
-    private get closeBtn() {
+    private get closeBtn(): HTMLElement {
         return this.wrapper.querySelector('#close') as HTMLElement;
     }
 
     /**
      * @property {HTMLElement | null} flash - the dom structure
      */
-    private get flash() {
+    private get flash(): HTMLElement {
         return this.wrapper.querySelector('.flash') as HTMLElement;
     }
 
@@ -136,7 +140,7 @@ class KamiFlash extends KamiComponent {
     }
 
     public static get observedAttributes() {
-        return ['type', 'message', 'position', 'stack'];
+        return ['type', 'message', 'position', 'stack', 'time', 'progressbar'];
     }
 
     constructor() {
@@ -145,6 +149,7 @@ class KamiFlash extends KamiComponent {
         this.index = 0;
         this.stackedPosition = 0;
         this.inLoad = true;
+        this.closed = false;
 
         // init animation
         this.bottomAnimation = bottomAnimation;
@@ -179,7 +184,9 @@ class KamiFlash extends KamiComponent {
             position: position,
             type: type,
             message: this.getAttribute('message') || 'Write your message flash here',
-            stack: this.toBoolean(this.getAttribute('stack')) || true
+            stack: this.toBoolean(this.getAttribute('stack')) || true,
+            time: this.getAttribute('time') || null,
+            progressbar: this.hasAttribute('progressbar') || false
         });
     }
 
@@ -189,41 +196,61 @@ class KamiFlash extends KamiComponent {
      */
     public connectedCallback(): void {
         // update the position if the flash is stacked
-        if (this.toBoolean(this.getAttribute('stack'))) {
-            // update the flash position
-            this.props.stacked = KamiFlash.stacked[this.position];
-            this.stackedPosition = KamiFlash.stacked[this.position];
-            KamiFlash.stacked[this.position] += KamiFlash.ofsetPosition;
+        this.toBoolean(this.getAttribute('stack'))
+            ? this.stackFlash()
+            : (this.props.stacked = KamiFlash.initialPosition);
 
-            // set the index of the flash into with the stacked flash length
-            this.index = KamiFlash.stackedFlash[this.position].length;
-
-            // push into the stackedFlash property the flash
-            KamiFlash.stackedFlash[this.position].push(this);
-        } else {
-            this.props.stacked = KamiFlash.initialPosition;
+        if (this.props.time && this.props.progressbar) {
+            this.displayProgressBar();
         }
 
-        if (this.flash && this.closeBtn) {
-            this.flash.animate(
-                this.animations[Position[this.props.position]].enter,
+        this.display();
+    }
+
+    /**
+     * Display the flash component.
+     * @returns {void}
+     */
+    public display(): void {
+        this.flash.animate(
+            this.animations[Position[this.props.position]].enter,
+            this.animationOptions
+        );
+
+        if (this.props.time) {
+            setTimeout(this.close.bind(this), this.props.time);
+            if (this.props.progressbar) {
+                this.progressbar!.start();
+            }
+        }
+
+        setTimeout(() => {
+            this.closeBtn.animate(
+                [
+                    { opacity: '0', transform: 'translateX(20px) rotateZ(45deg)' },
+                    { opacity: '1', transform: 'translateX(0px) rotateZ(0deg)' }
+                ] as Keyframe[],
                 this.animationOptions
-            );
+            ).onfinish = () => {
+                this.inLoad = false;
+                this.closeBtn.style.opacity = '1';
+                this.closeBtn.addEventListener('click', this.close.bind(this));
+            };
+        }, 400);
+    }
 
-            setTimeout(() => {
-                this.closeBtn.animate(
-                    [
-                        { opacity: '0', transform: 'translateX(20px) rotateZ(45deg)' },
-                        { opacity: '1', transform: 'translateX(0px) rotateZ(0deg)' }
-                    ] as Keyframe[],
-                    this.animationOptions
-                ).onfinish = () => {
-                    this.inLoad = false;
-                    this.closeBtn.style.opacity = '1';
-                    this.closeBtn.addEventListener('click', this.close.bind(this));
-                };
-            }, 400);
-        }
+    /**
+     * Display the progress bar.
+     * @returns {void}
+     */
+    public displayProgressBar(): void {
+        this.progressbar = new KamiProgressBar({
+            width: this.flash.offsetWidth,
+            time: this.props.time,
+            type: this.props.type as Type
+        });
+
+        this.flash.appendChild(this.progressbar);
     }
 
     /**
@@ -236,28 +263,58 @@ class KamiFlash extends KamiComponent {
                 this.animations[Position[this.props.position]].out,
                 this.animationOptions
             ).onfinish = () => {
-                // delete this component.
                 this.remove();
-                if (this.props.stack) {
-                    KamiFlash.stackedFlash[this.position].forEach((flash: this) => {
-                        // update other flash only if it sup a the current flash
-                        if (flash.index > this.index) {
-                            // update the stackedPosition property}
-                            flash.stackedPosition = flash.stackedPosition - KamiFlash.ofsetPosition;
-
-                            // update the position of all sup stacked flash
-                            this.position.substring(0, 6) === 'BOTTOM'
-                                ? (flash.dom.style.bottom = `${flash.stackedPosition}px`)
-                                : (flash.dom.style.top = `${flash.stackedPosition}px`);
-                        }
-                    });
-
-                    // descrease the current static property
-                    KamiFlash.stacked[this.position] -= KamiFlash.ofsetPosition;
-                    res(this);
+                if (this.props.stack && !this.closed) {
+                    this.unStackFlash();
                 }
+                res(this);
             };
         });
+    }
+
+    /**
+     * Store the current flash into the static flashs array.
+     * Also update the stack delta position.
+     * This methode is call when you set the stack props at true.
+     * @returns {void}
+     */
+    public stackFlash(): void {
+        this.props.stacked = KamiFlash.stacked[this.position];
+        this.stackedPosition = KamiFlash.stacked[this.position];
+        KamiFlash.stacked[this.position] += KamiFlash.ofsetPosition;
+
+        // set the index of the flash into with the stacked flash length
+        this.index = KamiFlash.stackedFlash[this.position].length;
+
+        // push into the stackedFlash property the flash
+        KamiFlash.stackedFlash[this.position].push(this);
+    }
+
+    /**
+     * Remove the flash from the stacked array.
+     * Also update the stack delta position.
+     * This methode is call when you set the stack props at true.
+     * @returns {void}
+     */
+    public unStackFlash(): void {
+        KamiFlash.stackedFlash[this.position].forEach((flash: this) => {
+            // update other flash only if it sup a the current flash
+            if (flash.index > this.index) {
+                // update the stackedPosition property}
+                flash.stackedPosition = flash.stackedPosition - KamiFlash.ofsetPosition;
+
+                // update the position of all sup stacked flash
+                this.position.substring(0, 6) === 'BOTTOM'
+                    ? (flash.dom.style.bottom = `${flash.stackedPosition}px`)
+                    : (flash.dom.style.top = `${flash.stackedPosition}px`);
+            }
+        });
+
+        // descrease the current static property
+        KamiFlash.stacked[this.position] -= KamiFlash.ofsetPosition;
+
+        // fix for timed flash
+        this.closed = true;
     }
 
     public renderHtml(): string {
@@ -373,18 +430,29 @@ class KamiFlash extends KamiComponent {
      * @param type {String} - flash type
      * @param message {String} - flash message
      * @param position {String} - flash position
+     * @returns {void}
      */
     public static createFlash(
         tagName: string = KamiFlash.tag,
         type: string,
         message: string,
         position: string,
-        stack: boolean = true
-    ) {
+        stack: boolean = true,
+        time: null | string = null,
+        progressbar: null | boolean
+    ): void {
         let flash = document.createElement(tagName);
         flash.setAttribute('type', type);
         flash.setAttribute('position', position);
         flash.setAttribute('stack', stack.toString());
+
+        if (time) {
+            flash.setAttribute('time', time);
+        }
+
+        if (progressbar) {
+            flash.setAttribute('progressbar', 'true');
+        }
 
         if (message !== '') {
             flash.setAttribute('message', message);
@@ -397,7 +465,7 @@ class KamiFlash extends KamiComponent {
      * Close all flashs instance.
      * @returns {void}
      */
-    public static closeAll() {
+    public static closeAll(): void {
         for (const [key, flashs] of Object.entries(KamiFlash.stackedFlash)) {
             flashs.forEach((flash: KamiFlash) => {
                 flash

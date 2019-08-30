@@ -1,10 +1,5 @@
-import '@webcomponents/webcomponentsjs/custom-elements-es5-adapter';
-import '@webcomponents/webcomponentsjs/webcomponents-bundle';
-import 'web-animations-js';
-import '@polymer/iron-icon/iron-icon.js';
-import '@polymer/iron-icons/iron-icons.js';
 import KamiComponent from 'kami-component';
-import IPosition from './interfaces/IPosition';
+import IPosition from '../interfaces/IPosition';
 /**
  * Create a simple flash message
  * @class KamiFlash
@@ -57,6 +52,14 @@ declare class KamiFlash extends KamiComponent {
      */
     private animationOptions;
     /**
+     * @property {KamiProgressBar | undefined } progressbar - a progress bar component
+     */
+    private progressbar;
+    /**
+     * @property {boolean} closed - status of the flash
+     */
+    private closed;
+    /**
      * @property {number} index - index of the flash
      */
     index: number;
@@ -89,10 +92,34 @@ declare class KamiFlash extends KamiComponent {
      */
     connectedCallback(): void;
     /**
+     * Display the flash component.
+     * @returns {void}
+     */
+    display(): void;
+    /**
+     * Display the progress bar.
+     * @returns {void}
+     */
+    displayProgressBar(): void;
+    /**
      * Close the flash instance.
      * @returns {Promise<KamiFlash>} the flash instance close
      */
     close(): Promise<KamiFlash>;
+    /**
+     * Store the current flash into the static flashs array.
+     * Also update the stack delta position.
+     * This methode is call when you set the stack props at true.
+     * @returns {void}
+     */
+    stackFlash(): void;
+    /**
+     * Remove the flash from the stacked array.
+     * Also update the stack delta position.
+     * This methode is call when you set the stack props at true.
+     * @returns {void}
+     */
+    unStackFlash(): void;
     renderHtml(): string;
     renderStyle(): string;
     /**
@@ -102,8 +129,9 @@ declare class KamiFlash extends KamiComponent {
      * @param type {String} - flash type
      * @param message {String} - flash message
      * @param position {String} - flash position
+     * @returns {void}
      */
-    static createFlash(tagName: string | undefined, type: string, message: string, position: string, stack?: boolean): void;
+    static createFlash(tagName: string | undefined, type: string, message: string, position: string, stack: boolean | undefined, time: string | null | undefined, progressbar: null | boolean): void;
     /**
      * Close all flashs instance.
      * @returns {void}

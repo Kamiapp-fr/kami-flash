@@ -40,6 +40,9 @@
             <option value="ERROR">Error</option>
             <option value="WARNING">Warning</option>
         </select>
+        <input id="time" type="number" style="width: 50px;" placeholder="time">
+        <label for="progressbar">progress bar</label>
+        <input id="progressbar" type="checkbox" name="test">
     </div>
 
     <div>
@@ -65,7 +68,7 @@
             //declare flash component
             customElements.define(KamiFlash.tag, KamiFlash);
 
-            KamiFlash.createFlash('kami-flash','INFO','Flash generate this the createFlash() methode','BOTTOM')
+            KamiFlash.createFlash('kami-flash','INFO','Flash generate with the createFlash() methode','BOTTOM',true,'5000',true)
 
             //get all button
             let buttons = document.querySelectorAll('.create');
@@ -78,13 +81,23 @@
                     let select = document.querySelector('#type')
                     let message = document.querySelector('#message');
                     let flash = document.createElement('kami-flash');
-                    
+                    let time = document.querySelector('#time');
+                    let progressbar = document.querySelector('#progressbar');
+
                     flash.setAttribute('type',select.options[select.selectedIndex].value);
                     flash.setAttribute('position',this.id);
                     flash.setAttribute('stack','true')
 
                     if(message.value){
                         flash.setAttribute('message',message.value);
+                    }
+
+                    if(time.value){
+                        flash.setAttribute('time',time.value);
+                    }
+
+                    if(progressbar.checked){
+                        flash.setAttribute('progressbar','true');
                     }
 
                     //append the flash message to the body
